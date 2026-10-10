@@ -11,6 +11,7 @@ uv export \
     --all-groups \
     --no-emit-project \
     --format requirements-txt \
-    --output-file "$requirements_file"
+    --output-file "$requirements_file" \
+    >/dev/null
 
 uv run --locked pip-audit --strict --require-hashes -r "$requirements_file"

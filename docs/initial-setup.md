@@ -2,9 +2,7 @@
 
 ## Purpose
 
-Establish a small, reproducible Python project and agent workflow before implementing the three challenge stories.
-
-The repository currently contains only a README. This setup introduces no SBOM processing, model-card extraction, reviewer workflow, UI, or replay functionality.
+Establish a small, reproducible Python project and agent workflow before implementing the three challenge stories. This setup introduces no SBOM processing, model-card extraction, reviewer workflow, UI, or replay functionality.
 
 ## Project and commands
 
@@ -133,7 +131,6 @@ to localhost. Do not expose Jenkins to the public internet. The named volume
 - The Jenkins job runs pytest and pip-audit and reports a passing build.
 - A temporary failing test is demonstrated to fail the test stage while the scan stage still runs.
 - A temporary dependency manifest containing a known vulnerable package is demonstrated to fail the scan stage.
-- Temporary failure demonstrations are removed before the setup is marked complete.
 - Jenkins persists its configuration across container restarts.
 - Temporary failure demonstrations are removed before the setup is marked complete.
 - No feature implementation, credentials, or machine-specific paths are committed.

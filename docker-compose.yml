@@ -1,0 +1,32 @@
+services:
+  jenkins:
+    build:
+      context: .
+      dockerfile: jenkins/Dockerfile
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:8080:8080"
+    volumes:
+      - jenkins_home:/var/jenkins_home
+    networks:
+      - ci
+
+  jenkins-agent:
+    build:
+      context: .
+      dockerfile: jenkins/agent/Dockerfile
+    restart: unless-stopped
+    depends_on:
+      - jenkins
+    environment:
+      JENKINS_URL: http://jenkins:8080
+      JENKINS_AGENT_NAME: python312
+      JENKINS_AGENT_SECRET: ${JENKINS_AGENT_SECRET:-}
+    networks:
+      - ci
+
+volumes:
+  jenkins_home:
+
+networks:
+  ci:
