@@ -1,6 +1,29 @@
 # STORY-001: Parse the SBOM and classify licenses against policy
 
-Status: Ready for implementation
+Status: Implemented; awaiting Jenkins validation
+
+## Local validation handoff
+
+Implemented on branch `story-001`, created from `main` at `3e65b61`.
+Changes are split into policy/classification, SBOM adaptation, installed CLI, and
+sample/documentation commits.
+
+Local acceptance on 2026-10-10:
+
+- `uv sync --locked`: passed.
+- `uv run --locked pytest`: **106 passed**. Includes offline schema validation,
+  missing-evidence handling, installed CLI error paths, and independent sample
+  expectations with repeatable JSON output.
+- `sh scripts/audit-dependencies.sh`: passed; **No known vulnerabilities found**.
+- `uv run --locked sbom-reviewer review samples/cyclonedx.json --policy policy/licenses.json`:
+  exit 0; **13 total / 4 Allow / 8 Needs review / 1 Reject**, matching the
+  independently specified acceptance fixture.
+- `git diff --check`: passed.
+
+Model-card inspection and human decisions remain deferred. No referenced SBOM
+content is fetched. Jenkins validation has **not** been performed: the user must
+build the committed `story-001` revision, verify Tests and Dependency audit, and
+record the revision, build number, and result before marking this story Complete.
 
 ## User outcome
 

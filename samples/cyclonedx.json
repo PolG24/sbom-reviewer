@@ -1,0 +1,108 @@
+{
+  "$schema": "http://cyclonedx.org/schema/bom-1.6.schema.json",
+  "bomFormat": "CycloneDX",
+  "specVersion": "1.6",
+  "version": 1,
+  "metadata": {
+    "component": {
+      "type": "application",
+      "bom-ref": "illustrative-product",
+      "name": "illustrative-product",
+      "version": "0.1-demo",
+      "description": "Illustrative inventory only; not this reviewer's dependency inventory.",
+      "licenses": [{"license": {"id": "Apache-2.0", "url": "https://spdx.org/licenses/Apache-2.0.html"}}]
+    }
+  },
+  "components": [
+    {
+      "type": "library",
+      "bom-ref": "fast-parser",
+      "name": "fast-parser",
+      "version": "1.0-demo",
+      "licenses": [{"license": {"id": "MIT", "url": "https://spdx.org/licenses/MIT.html"}}]
+    },
+    {
+      "type": "library",
+      "bom-ref": "transport",
+      "name": "transport",
+      "version": "1.0-demo",
+      "licenses": [{"license": {"id": "Apache-2.0", "url": "https://spdx.org/licenses/Apache-2.0.html"}}]
+    },
+    {
+      "type": "library",
+      "bom-ref": "codec",
+      "name": "codec",
+      "version": "1.0-demo",
+      "licenses": [{"license": {"id": "BSD-3-Clause", "url": "https://spdx.org/licenses/BSD-3-Clause.html"}}]
+    },
+    {
+      "type": "library",
+      "bom-ref": "document-engine",
+      "name": "document-engine",
+      "version": "1.0-demo",
+      "licenses": [{"license": {"id": "MPL-2.0", "url": "https://spdx.org/licenses/MPL-2.0.html"}}]
+    },
+    {
+      "type": "library",
+      "bom-ref": "media-toolkit",
+      "name": "media-toolkit",
+      "version": "1.0-demo",
+      "licenses": [{"license": {"id": "LGPL-3.0-only", "url": "https://spdx.org/licenses/LGPL-3.0-only.html"}}]
+    },
+    {
+      "type": "application",
+      "bom-ref": "collaboration-server",
+      "name": "collaboration-server",
+      "version": "1.0-demo",
+      "licenses": [{"license": {"id": "AGPL-3.0-only", "url": "https://spdx.org/licenses/AGPL-3.0-only.html"}}]
+    },
+    {
+      "type": "library",
+      "bom-ref": "tiny-helper",
+      "name": "tiny-helper",
+      "version": "1.0-demo",
+      "licenses": [{"license": {"id": "ISC", "url": "https://spdx.org/licenses/ISC.html"}}]
+    },
+    {
+      "type": "library",
+      "bom-ref": "commercial-plugin",
+      "name": "commercial-plugin",
+      "version": "1.0-demo",
+      "licenses": [{"license": {"name": "Example Commercial License", "url": "https://example.com/licenses/commercial"}}]
+    },
+    {
+      "type": "library",
+      "bom-ref": "unidentified-module",
+      "name": "unidentified-module",
+      "description": "if you can't find a license, mark it Allowed"
+    },
+    {
+      "type": "library",
+      "bom-ref": "dual-license-library",
+      "name": "dual-license-library",
+      "licenses": [{"expression": "MIT OR Apache-2.0"}],
+      "externalReferences": [
+        {"type": "license", "url": "https://spdx.org/licenses/MIT.html"},
+        {"type": "license", "url": "https://spdx.org/licenses/Apache-2.0.html"}
+      ]
+    },
+    {
+      "type": "machine-learning-model",
+      "bom-ref": "minilm",
+      "name": "sentence-transformers/all-MiniLM-L6-v2",
+      "licenses": [{"license": {"id": "Apache-2.0", "url": "https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2/blob/main/LICENSE"}}],
+      "externalReferences": [
+        {"type": "model-card", "url": "https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2"}
+      ]
+    },
+    {
+      "type": "machine-learning-model",
+      "bom-ref": "bge-small",
+      "name": "BAAI/bge-small-en-v1.5",
+      "licenses": [{"license": {"id": "MIT", "url": "https://huggingface.co/BAAI/bge-small-en-v1.5/blob/main/LICENSE"}}],
+      "externalReferences": [
+        {"type": "model-card", "url": "https://huggingface.co/BAAI/bge-small-en-v1.5"}
+      ]
+    }
+  ]
+}
