@@ -3,7 +3,7 @@ FROM python:3.12-slim-trixie
 COPY --from=ghcr.io/astral-sh/uv:0.9.18 /uv /uvx /usr/local/bin/
 
 RUN apt-get update \
-    && apt-get install --yes --no-install-recommends ca-certificates curl openjdk-21-jre-headless \
+    && apt-get install --yes --no-install-recommends ca-certificates curl git openjdk-21-jre-headless \
     && rm -rf /var/lib/apt/lists/* \
     && groupadd --gid 1000 jenkins \
     && useradd --uid 1000 --gid jenkins --create-home --shell /bin/sh jenkins \

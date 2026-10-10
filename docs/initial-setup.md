@@ -105,9 +105,18 @@ docker compose up -d jenkins-agent
 Confirm `python312` is online on the Nodes page. The image supplies Python 3.12
 and uv 0.9.18.
 
+Rebuild the local images so the Git source mount is available:
+
+```bash
+docker compose up -d --build
+```
+
 Create a **Pipeline** job. Under **Pipeline**, choose **Pipeline script from
-SCM**, select **Git**, enter this repository's URL, set the branch to `*/main`,
-and set **Script Path** to `Jenkinsfile`. Save and select **Build Now**.
+SCM**, select **Git**, set the repository URL to
+`file:///opt/sbom-reviewer.git`, set the branch to
+`*/chore/initial-setup`, and set **Script Path** to `Jenkinsfile`. Save and
+select **Build Now**. The read-only mount exposes the local Git history and
+branches without mounting `.env` into either container.
 
 The test and audit stages each save their output and status before the pipeline
 reports failure, so one failing check does not prevent the other from running.

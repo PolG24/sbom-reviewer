@@ -8,6 +8,7 @@ services:
       - "127.0.0.1:8080:8080"
     volumes:
       - jenkins_home:/var/jenkins_home
+      - ./.git:/opt/sbom-reviewer.git:ro
     networks:
       - ci
 
@@ -22,6 +23,8 @@ services:
       JENKINS_URL: http://jenkins:8080
       JENKINS_AGENT_NAME: python312
       JENKINS_AGENT_SECRET: ${JENKINS_AGENT_SECRET:-}
+    volumes:
+      - ./.git:/opt/sbom-reviewer.git:ro
     networks:
       - ci
 
