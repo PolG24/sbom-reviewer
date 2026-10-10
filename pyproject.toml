@@ -5,6 +5,7 @@ description = "First pass review of Software Bills of Materials for legal accele
 readme = "README.md"
 requires-python = ">=3.12,<3.13"
 dependencies = [
+    "cyclonedx-python-lib[json-validation]>=11,<12",
     "pydantic>=2.0,<3.0",
 ]
 
