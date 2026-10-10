@@ -36,5 +36,5 @@ the commands run and any remaining limitations.
 ## Local Jenkins
 
 The repository includes a local Jenkins controller and Python 3.12 agent. Follow
-the first-time setup instructions in [docs/initial-setup.md](docs/initial-setup.md).
+the setup instructions in [docs/local-jenkins.md](docs/local-jenkins.md).
 Jenkins is bound to `127.0.0.1:8080` and is intended for local use only.
