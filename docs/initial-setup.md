@@ -25,7 +25,7 @@ Document these commands:
 uv sync --locked
 uv run --locked sbom-reviewer --help
 uv run --locked pytest
-uv run --locked pip-audit --strict
+sh scripts/audit-dependencies.sh
 ```
 
 ## Agent workflow and documentation
@@ -62,6 +62,65 @@ Update the README with installation, CLI help, validation commands, and the deve
 - Preserve test and scan output as Jenkins build artifacts, including when a stage fails.
 - Run CLI tests without API keys or external evidence sources.
 - Keep Jenkins local for this take-home workflow; do not expose it to the public internet.
+
+## First-time Jenkins setup
+
+Requirements: Docker Engine with the Compose plugin. Start the controller and
+agent containers from the repository root:
+
+```bash
+docker compose up -d
+```
+
+Open `http://localhost:8080`. Get the initial unlock password with:
+
+```bash
+docker compose exec jenkins cat /var/jenkins_home/secrets/initialAdminPassword
+```
+
+Unlock Jenkins, skip installing suggested plugins, then use **Manage Jenkins →
+Plugins → Available plugins** to install **Pipeline** (`workflow-aggregator`).
+Restart Jenkins when prompted.
+
+Create the build agent under **Manage Jenkins → Nodes → New Node**:
+
+- Name: `python312`; select **Permanent Agent**.
+- Number of executors: `1`.
+- Remote root directory: `/home/jenkins/agent`.
+- Labels: `python312`.
+- Launch method: **Launch agent by connecting it to the controller**; enable
+  WebSocket if the option is shown.
+
+Copy the agent secret from its node page into a local `.env` file (ignored by
+Git):
+
+```dotenv
+JENKINS_AGENT_SECRET=copy-the-node-secret-here
+```
+
+Start or restart the agent so it can connect:
+
+```bash
+docker compose up -d jenkins-agent
+```
+
+Confirm `python312` is online on the Nodes page. The image supplies Python 3.12
+and uv 0.9.18.
+
+Create a **Pipeline** job. Under **Pipeline**, choose **Pipeline script from
+SCM**, select **Git**, enter this repository's URL, set the branch to `*/main`,
+and set **Script Path** to `Jenkinsfile`. Save and select **Build Now**.
+
+The test and audit stages each save their output and status before the pipeline
+reports failure, so one failing check does not prevent the other from running.
+Jenkins archives both outputs even when a check fails. The audit scans all
+locked runtime and development dependencies with hashes and excludes only the
+local editable application package. It fails for known vulnerabilities,
+dependency lookup errors, and dependencies the scanner cannot audit.
+
+Keep the controller and agent on the Compose network and the web interface bound
+to localhost. Do not expose Jenkins to the public internet. The named volume
+`jenkins_home` preserves configuration across container restarts.
 
 ## Acceptance criteria
 
