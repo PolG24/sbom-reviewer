@@ -14,12 +14,12 @@
     },
     {
       "type": "machine-learning-model",
-      "bom-ref": "panel-demo-embedder",
-      "name": "panel-demo/mini-embedder",
-      "description": "Fictional model. Its model-card reference identifies a synthetic teaching fixture, not a real repository.",
+      "bom-ref": "minilm",
+      "name": "sentence-transformers/all-MiniLM-L6-v2",
+      "description": "Real Hugging Face model used in an illustrative inventory; supplied licensing declarations are not independently verified.",
       "licenses": [{"license": {"id": "Apache-2.0"}}],
       "externalReferences": [
-        {"type": "model-card", "url": "https://huggingface.co/panel-demo/mini-embedder"}
+        {"type": "model-card", "url": "https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2"}
       ]
     }
   ]
