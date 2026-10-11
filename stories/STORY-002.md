@@ -1,6 +1,43 @@
 # STORY-002: Inspect AI model cards and flag licensing concerns
 
-Status: Ready for implementation
+Status: Implemented; awaiting Jenkins validation
+
+## Local validation handoff
+
+Implemented locally on `story-002`, created from `main` at `edad478`.
+Changes are organized into four local commits for review: parser and assessment
+models, bounded retrieval, policy/CLI integration, and sample/documentation handoff.
+The branch remains unpushed. STORY-001's SBOM adapter, policy schema, and offline
+decisions are preserved; results add nullable `model_assessment`.
+
+Local acceptance on 2026-10-11:
+
+- `uv sync --locked`: passed; PyYAML 6.0.3 is the only added dependency.
+- `uv run --locked pytest`: **329 passed**. Synthetic fixtures and HTTP-boundary
+  doubles cover safe metadata parsing, exact evidence, bounded retrieval, policy
+  precedence, opt-in CLI behavior, component failures, and offline regressions.
+- `sh scripts/audit-dependencies.sh`: passed; **No known vulnerabilities found**.
+- `uv run --locked sbom-reviewer review samples/cyclonedx.json --policy policy/licenses.json`:
+  exit 0; inspected against independent expectations: **14 total / 4 Allow /
+  9 Needs review / 1 Reject**. Every offline assessment is null.
+- `git diff --check`: passed.
+- The same sample command with `--fetch-model-cards`: exit 0, no stderr;
+  all three cards were retrieved and inspected. MiniLM's `apache-2.0` and BGE's
+  `mit` normalize to allowed metadata licenses, while overall decisions remain
+  Needs review. BLOOM's `bigscience-bloom-rail-1.0` is an unfamiliar metadata
+  identifier; potential `non-commercial` and `may not` passages are flagged
+  without legal interpretation. BGE's linked license terms remain explicitly
+  unread. Live summary: **14 total / 4 Allow / 9 Needs review / 1 Reject**.
+
+Assessments also retain `license_evidence`, the actual metadata lines needed by
+the pure policy layer to quote license conflicts. No external document instructions
+are executed. Referenced terms are not fetched, indicators are deliberately limited,
+runtime AI is not implemented, and `main` cards do not verify a weights revision.
+There are no unresolved local acceptance blockers.
+
+Jenkins validation is pending. The user must validate a committed revision containing
+these local changes and record its revision, build number, and result before this
+story can be marked Complete. No Jenkins build has been run or claimed here.
 
 ## User outcome
 
