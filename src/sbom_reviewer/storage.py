@@ -55,9 +55,12 @@ def save_review(path: Path, snapshot: ReviewResult) -> None:
             connection.execute(f"PRAGMA user_version = {SCHEMA_VERSION}")
             connection.execute("INSERT INTO snapshot VALUES (1, ?, ?)",
                                (snapshot.model_dump_json(), datetime.now(timezone.utc).isoformat()))
-    except StorageError:
+    except StorageError as exc:
         # Only remove the file this call exclusively created, never an existing review.
-        path.unlink(missing_ok=True)
+        try:
+            path.unlink(missing_ok=True)
+        except OSError as cleanup_error:
+            raise StorageError(f"{exc}; cannot clean up incomplete database '{path}': {cleanup_error}") from exc
         raise
 
 

@@ -9,7 +9,6 @@ from sbom_reviewer import storage as api
 from sbom_reviewer.models import ReviewResult
 
 
-
 def test_roundtrip_retains_complete_evidence_and_independent_reviews(tmp_path: Path, machine_review: ReviewResult) -> None:
     first, second = tmp_path / "first.sqlite", tmp_path / "second.sqlite"
     api.save_review(first, machine_review)
@@ -107,3 +106,40 @@ def test_existing_snapshot_is_not_overwritten_and_missing_parent_is_error(tmp_pa
     assert path.read_bytes() == b"preserve me"
     with pytest.raises(api.StorageError):
         api.save_review(tmp_path / "missing" / "review.sqlite", machine_review)
+
+
+def test_reviewer_text_is_parameterized_and_duplicate_names_keep_separate_histories(tmp_path: Path, machine_review: ReviewResult) -> None:
+    path = tmp_path / "review.sqlite"
+    api.save_review(path, machine_review)
+    text = "'); DROP TABLE snapshot; --"
+    first = api.record_decision(path, "#/components/0", confirm=True, reviewer=text, reason=text)
+    second = api.record_decision(path, "#/components/1", confirm=True, reviewer="Other", reason="Missing evidence remains unresolved")
+    view = api.load_review(path)
+    assert view.snapshot == machine_review
+    assert view.audit_log == view.reviewer_decisions == [first, second]
+    assert view.audit_log[0].reviewer == view.audit_log[0].reason == text
+    assert view.reviewer_summary.model_dump() == {"total": 3, "recorded": 2, "pending": 1,
+                                               "allow": 1, "needs_review": 1, "reject": 0}
+
+
+@pytest.mark.parametrize("cleanup_fails", [False, True])
+def test_failed_database_creation_reports_storage_errors_and_cleans_up_when_possible(
+    tmp_path: Path, machine_review: ReviewResult, monkeypatch, cleanup_fails: bool,
+) -> None:
+    path = tmp_path / "review.sqlite"
+    # Simulate OS/SQLite failures at their I/O boundaries, not the storage logic.
+    def fail_connection(*args, **kwargs):
+        raise sqlite3.OperationalError("synthetic disk failure")
+    monkeypatch.setattr(sqlite3, "connect", fail_connection)
+    if cleanup_fails:
+        def fail_unlink(self, *args, **kwargs):
+            raise PermissionError("synthetic cleanup permission failure")
+        monkeypatch.setattr(Path, "unlink", fail_unlink)
+    with pytest.raises(api.StorageError) as error:
+        api.save_review(path, machine_review)
+    assert str(path) in str(error.value)
+    assert "synthetic disk failure" in str(error.value)
+    if cleanup_fails:
+        assert "cleanup" in str(error.value)
+    else:
+        assert not path.exists()
