@@ -135,6 +135,9 @@ license expressions, license compatibility, vulnerabilities, or SPDX documents.
 
 ## Saved reviews and reviewer decisions
 
+For a two-component rehearsal with an offline card fixture, SQLite inspection,
+and successive reports, follow [the presentation walkthrough](presentation/COMMANDS.md).
+
 Save a complete machine review to a **new** SQLite file, record individual human
 actions, inspect the resulting JSON, and export a standalone HTML report:
 

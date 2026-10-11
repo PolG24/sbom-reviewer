@@ -1,0 +1,26 @@
+{
+  "$schema": "http://cyclonedx.org/schema/bom-1.6.schema.json",
+  "bomFormat": "CycloneDX",
+  "specVersion": "1.6",
+  "version": 1,
+  "components": [
+    {
+      "type": "library",
+      "bom-ref": "panel-demo-utils",
+      "name": "panel-demo-utils",
+      "version": "1.0.0",
+      "description": "Fictional library for a two-component presentation.",
+      "licenses": [{"license": {"id": "MIT"}}]
+    },
+    {
+      "type": "machine-learning-model",
+      "bom-ref": "panel-demo-embedder",
+      "name": "panel-demo/mini-embedder",
+      "description": "Fictional model. Its model-card reference identifies a synthetic teaching fixture, not a real repository.",
+      "licenses": [{"license": {"id": "Apache-2.0"}}],
+      "externalReferences": [
+        {"type": "model-card", "url": "https://huggingface.co/panel-demo/mini-embedder"}
+      ]
+    }
+  ]
+}
