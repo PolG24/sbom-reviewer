@@ -13,7 +13,8 @@ def prepare_decision(
     snapshot: ReviewResult, component_id: str, *, reviewer: str, reason: str,
     confirm: bool = False, override: str | None = None,
 ) -> PreparedDecision:
-    if confirm == (override is not None):
+    has_override = override is not None
+    if (confirm and has_override) or (not confirm and not has_override):
         raise DecisionError("Choose exactly one of confirm or override.")
     if not reviewer.strip():
         raise DecisionError("A nonblank reviewer name is required.")
