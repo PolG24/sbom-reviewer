@@ -29,19 +29,24 @@ def test_sample_inventory_has_expected_findings_and_repeatable_json() -> None:
         ("#/components/9", "dual-license-library", ["MIT OR Apache-2.0"], "Needs review"),
         ("#/components/10", "sentence-transformers/all-MiniLM-L6-v2", ["Apache-2.0"], "Needs review"),
         ("#/components/11", "BAAI/bge-small-en-v1.5", ["MIT"], "Needs review"),
+        ("#/components/12", "bigscience/bloom-560m", ["BigScience RAIL License"], "Needs review"),
     ]
     assert data["policy_version"] == "1.0"
-    assert data["summary"] == {"total": 13, "allow": 4, "needs_review": 8, "reject": 1}
+    assert data["summary"] == {"total": 14, "allow": 4, "needs_review": 9, "reject": 1}
     assert all(r["reason"] and r["sources"] for r in data["results"])
     missing = data["results"][9]
     assert missing["sources"] == [{"url": None, "kind": "sbom-declaration", "pointer": "#/components/8"}]
-    for model, card_url in zip(data["results"][-2:], [
+    for model, card_url in zip(data["results"][-3:-1], [
         "https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2",
         "https://huggingface.co/BAAI/bge-small-en-v1.5",
     ], strict=True):
         assert model["type"] == "machine-learning-model"
         assert "allowed" in model["reason"] and "model-card restrictions have not been checked" in model["reason"]
         assert any(s["kind"] == "model-card" and s["url"] == card_url for s in model["sources"])
+    custom = data["results"][-1]
+    assert "custom" in custom["reason"]
+    assert any(source["url"] == "https://huggingface.co/bigscience/bloom-560m" and source["kind"] == "model-card" for source in custom["sources"])
+    assert all(result["model_assessment"] is None for result in data["results"])
     again = subprocess.run(args, check=False, capture_output=True, text=True)
     assert again.returncode == 0
     assert again.stderr == ""

@@ -3,7 +3,8 @@
 import argparse
 from pathlib import Path
 
-from sbom_reviewer.policy import load_policy, review_components
+from sbom_reviewer.policy import load_policy
+from sbom_reviewer.review import review_components
 from sbom_reviewer.sbom import load_sbom
 
 
@@ -17,6 +18,8 @@ def build_parser() -> argparse.ArgumentParser:
     review = commands.add_parser("review", help="Review a CycloneDX JSON 1.6 SBOM against a local license policy.")
     review.add_argument("sbom", type=Path, help="Path to the CycloneDX JSON 1.6 SBOM.")
     review.add_argument("--policy", type=Path, required=True, help="Path to the local JSON license policy.")
+    review.add_argument("--fetch-model-cards", action="store_true",
+                        help="Fetch public Hugging Face Markdown model cards for evidence review (opt-in network access).")
     return parser
 
 
@@ -32,7 +35,7 @@ def main() -> None:
         components = load_sbom(args.sbom)
     except (OSError, ValueError) as exc:
         parser.error(f"Cannot review SBOM '{args.sbom}': {exc}")
-    result = review_components(components, policy)
+    result = review_components(components, policy, fetch_model_cards=args.fetch_model_cards)
     print(result.model_dump_json(indent=2))
 
 

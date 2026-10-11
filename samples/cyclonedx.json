@@ -103,6 +103,16 @@
       "externalReferences": [
         {"type": "model-card", "url": "https://huggingface.co/BAAI/bge-small-en-v1.5"}
       ]
+    },
+    {
+      "type": "machine-learning-model",
+      "bom-ref": "bloom-560m",
+      "name": "bigscience/bloom-560m",
+      "description": "Illustrative example of custom/restricted licensing; not independently verified licensing advice.",
+      "licenses": [{"license": {"name": "BigScience RAIL License", "url": "https://huggingface.co/bigscience/bloom-560m/blob/main/LICENSE"}}],
+      "externalReferences": [
+        {"type": "model-card", "url": "https://huggingface.co/bigscience/bloom-560m"}
+      ]
     }
   ]
 }

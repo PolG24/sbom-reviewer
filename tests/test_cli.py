@@ -156,3 +156,55 @@ def test_invalid_policy_is_a_cli_input_error(tmp_path: Path, document: object) -
     assert "Cannot load policy" in result.stderr
     assert str(policy) in result.stderr
     assert "Traceback" not in result.stderr
+
+
+def test_review_help_explains_opt_in_card_fetching() -> None:
+    result = run_cli("review", "--help")
+    assert result.returncode == 0
+    assert "--fetch-model-cards" in result.stdout
+    assert "Hugging Face" in result.stdout
+
+
+@pytest.mark.parametrize("enabled", [False, True])
+def test_in_process_cli_fetch_is_opt_in_and_evidence_failure_exits_zero(tmp_path: Path, monkeypatch, capsys, enabled: bool) -> None:
+    from sbom_reviewer import cli
+    from sbom_reviewer.model_card_fetch import CardFetchError
+    from sbom_reviewer.models import FindingCode
+    import sys
+
+    sbom, policy = write_inputs(tmp_path, [
+        {"type": "machine-learning-model", "name": "failed", "licenses": [{"license": {"id": "MIT"}}],
+         "externalReferences": [{"type": "model-card", "url": "https://huggingface.co/test/failed"}]},
+        {"type": "machine-learning-model", "name": "rejected", "licenses": [{"license": {"id": "MIT"}}],
+         "externalReferences": [{"type": "model-card", "url": "https://huggingface.co/test/rejected"}]},
+        {"type": "library", "name": "ordinary", "licenses": [{"license": {"id": "MIT"}}]},
+    ])
+    from sbom_reviewer import review
+    from sbom_reviewer.model_card_fetch import FetchedCard
+    import hashlib
+    calls = []
+    def fetch(url: str):
+        calls.append(url)
+        if url.endswith("failed"):
+            raise CardFetchError(FindingCode.UNAVAILABLE_SOURCE, "Synthetic timeout")
+        text = "---\nlicense: agpl-3.0-only\n---\n# Synthetic\n"
+        return FetchedCard(url + "/raw/main/README.md", text, hashlib.sha256(text.encode()).hexdigest())
+    monkeypatch.setattr(review, "fetch_model_card", fetch)
+    args = ["sbom-reviewer", "review", str(sbom), "--policy", str(policy)]
+    if enabled:
+        args.append("--fetch-model-cards")
+    monkeypatch.setattr(sys, "argv", args)
+    cli.main()  # Any SystemExit or traceback is a test failure.
+    captured = capsys.readouterr()
+    assert captured.err == ""
+    data = json.loads(captured.out)
+    assert len(data["results"]) == 3
+    if enabled:
+        assert calls == ["https://huggingface.co/test/failed", "https://huggingface.co/test/rejected"]
+        assert data["results"][0]["model_assessment"]["status"] == "unavailable"
+        assert data["results"][1]["decision"] == "Reject"
+        assert data["summary"] == {"total": 3, "allow": 1, "needs_review": 1, "reject": 1}
+    else:
+        assert calls == []
+        assert all(r["model_assessment"] is None for r in data["results"])
+        assert data["summary"] == {"total": 3, "allow": 1, "needs_review": 2, "reject": 0}
