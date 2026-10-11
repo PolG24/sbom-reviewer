@@ -17,3 +17,4 @@ test-output.txt
 audit-output.txt
 test-status.txt
 audit-status.txt
+.vscode/
