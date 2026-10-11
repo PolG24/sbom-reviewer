@@ -5,7 +5,7 @@ import sqlite3
 
 import pytest
 
-from sbom_reviewer import storage as api
+from sbom_reviewer.saved_reviews import storage as api
 from sbom_reviewer.models import ReviewResult
 
 

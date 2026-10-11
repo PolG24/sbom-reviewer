@@ -6,7 +6,7 @@ import sys
 import pytest
 
 from sbom_reviewer.models import ReviewResult
-from sbom_reviewer.storage import save_review
+from sbom_reviewer.saved_reviews.storage import save_review
 from test_cli import run_cli
 
 

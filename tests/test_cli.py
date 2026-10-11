@@ -168,7 +168,7 @@ def test_review_help_explains_opt_in_card_fetching() -> None:
 @pytest.mark.parametrize("enabled", [False, True])
 def test_in_process_cli_fetch_is_opt_in_and_evidence_failure_exits_zero(tmp_path: Path, monkeypatch, capsys, enabled: bool) -> None:
     from sbom_reviewer import cli
-    from sbom_reviewer.model_card_fetch import CardFetchError
+    from sbom_reviewer.model_cards.fetch import CardFetchError
     from sbom_reviewer.models import FindingCode
     import sys
 
@@ -180,7 +180,7 @@ def test_in_process_cli_fetch_is_opt_in_and_evidence_failure_exits_zero(tmp_path
         {"type": "library", "name": "ordinary", "licenses": [{"license": {"id": "MIT"}}]},
     ])
     from sbom_reviewer import review
-    from sbom_reviewer.model_card_fetch import FetchedCard
+    from sbom_reviewer.model_cards.fetch import FetchedCard
     import hashlib
     calls = []
     def fetch(url: str):

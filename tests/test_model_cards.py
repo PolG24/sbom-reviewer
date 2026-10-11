@@ -13,8 +13,8 @@ URL = "https://huggingface.co/test/model/raw/main/README.md"
 
 def inspect(text: str):
     # Import at use time so the first red run reports the missing behavior clearly.
-    from sbom_reviewer.model_card_fetch import FetchedCard
-    from sbom_reviewer.model_cards import inspect_model_card
+    from sbom_reviewer.model_cards.fetch import FetchedCard
+    from sbom_reviewer.model_cards.parser import inspect_model_card
     return inspect_model_card(FetchedCard(URL, text, hashlib.sha256(text.encode()).hexdigest()))
 
 
@@ -156,8 +156,8 @@ def test_terms_resolve_to_blob_location_and_are_explicitly_unread() -> None:
     (r"https://example.org/terms_\(v1\)", "https://example.org/terms_(v1)"),
 ])
 def test_parenthesized_license_links_preserve_the_complete_url(destination: str, expected: str) -> None:
-    from sbom_reviewer.model_card_fetch import FetchedCard
-    from sbom_reviewer.model_cards import referenced_terms
+    from sbom_reviewer.model_cards.fetch import FetchedCard
+    from sbom_reviewer.model_cards.parser import referenced_terms
 
     text = f"---\nlicense: MIT\n---\n## License\nRead [terms]({destination}).\n"
     result = inspect(text)
@@ -175,8 +175,8 @@ def test_parenthesized_license_links_preserve_the_complete_url(destination: str,
     ("test/model/raw/raw", "test/model/blob/raw"),
 ])
 def test_relative_terms_only_replace_the_raw_route(path: str, expected_base: str) -> None:
-    from sbom_reviewer.model_card_fetch import FetchedCard
-    from sbom_reviewer.model_cards import inspect_model_card, referenced_terms
+    from sbom_reviewer.model_cards.fetch import FetchedCard
+    from sbom_reviewer.model_cards.parser import inspect_model_card, referenced_terms
 
     text = "---\nlicense: MIT\nlicense_link: LICENSE\n---\n## License\nRead [terms](TERMS.md).\n"
     card = FetchedCard(f"https://huggingface.co/{path}/README.md", text, hashlib.sha256(text.encode()).hexdigest())

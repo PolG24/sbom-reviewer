@@ -8,7 +8,7 @@ import sqlite3
 import pytest
 
 from sbom_reviewer.models import ReviewResult
-from sbom_reviewer.storage import load_review, save_review
+from sbom_reviewer.saved_reviews.storage import load_review, save_review
 from test_cli import run_cli, write_inputs
 
 
@@ -118,7 +118,7 @@ def test_saved_review_help(arguments: list[str], expected: str) -> None:
 
 def test_save_with_opt_in_fetch_preserves_inspected_card(tmp_path: Path, monkeypatch, capsys) -> None:
     from sbom_reviewer import cli, review
-    from sbom_reviewer.model_card_fetch import FetchedCard
+    from sbom_reviewer.model_cards.fetch import FetchedCard
     import hashlib
 
     sbom, policy = write_inputs(tmp_path, [{"type": "machine-learning-model", "name": "model",

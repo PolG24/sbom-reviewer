@@ -5,8 +5,8 @@ from pathlib import Path
 
 import pytest
 
-from sbom_reviewer.model_card_fetch import CardFetchError, FetchedCard
-from sbom_reviewer.model_cards import inspect_model_card
+from sbom_reviewer.model_cards.fetch import CardFetchError, FetchedCard
+from sbom_reviewer.model_cards.parser import inspect_model_card
 from sbom_reviewer.models import Component, Decision, FindingCode, LicenseDeclaration, Policy, SourceReference
 from sbom_reviewer.policy import classify_component, review_components
 

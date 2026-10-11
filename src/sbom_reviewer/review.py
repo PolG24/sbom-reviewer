@@ -3,10 +3,10 @@
 from collections.abc import Callable
 
 from sbom_reviewer import policy as license_policy
-from sbom_reviewer.model_card_fetch import (
+from sbom_reviewer.model_cards.fetch import (
     CardFetchError, FetchedCard, fetch_model_card, normalize_model_card_url,
 )
-from sbom_reviewer.model_cards import inspect_model_card, referenced_terms
+from sbom_reviewer.model_cards.parser import inspect_model_card, referenced_terms
 from sbom_reviewer.models import (
     Component, FindingCode, ModelAssessment, ModelFinding, Policy, ReviewResult, SourceReference,
 )

@@ -8,7 +8,7 @@ from typing import Iterator
 
 from pydantic import ValidationError
 
-from sbom_reviewer.decisions import current_decisions, prepare_decision
+from sbom_reviewer.saved_reviews.decisions import current_decisions, prepare_decision
 from sbom_reviewer.models import DecisionEvent, ReviewResult, SavedReview
 
 

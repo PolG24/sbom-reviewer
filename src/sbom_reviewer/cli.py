@@ -3,13 +3,13 @@
 import argparse
 from pathlib import Path
 
-from sbom_reviewer.decisions import DecisionError
+from sbom_reviewer.saved_reviews.decisions import DecisionError
 from sbom_reviewer.models import Decision, ReviewResult
 from sbom_reviewer.policy import load_policy
-from sbom_reviewer.report import render_report
+from sbom_reviewer.saved_reviews.report import render_report
 from sbom_reviewer.review import review_components
 from sbom_reviewer.sbom import load_sbom
-from sbom_reviewer.storage import StorageError, load_review, record_decision, save_review
+from sbom_reviewer.saved_reviews.storage import StorageError, load_review, record_decision, save_review
 
 
 def build_parser() -> argparse.ArgumentParser:

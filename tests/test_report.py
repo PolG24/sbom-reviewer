@@ -6,8 +6,8 @@ from pathlib import Path
 import pytest
 
 from sbom_reviewer.models import ReviewResult
-from sbom_reviewer.report import render_report
-from sbom_reviewer.storage import load_review, record_decision, save_review
+from sbom_reviewer.saved_reviews.report import render_report
+from sbom_reviewer.saved_reviews.storage import load_review, record_decision, save_review
 
 
 class ParsedReport(HTMLParser):

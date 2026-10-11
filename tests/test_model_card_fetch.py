@@ -11,7 +11,7 @@ import pytest
 
 
 def fetch_module():
-    from sbom_reviewer import model_card_fetch
+    from sbom_reviewer.model_cards import fetch as model_card_fetch
     assert hasattr(model_card_fetch, "fetch_model_card"), "Bounded retrieval is not implemented"
     return model_card_fetch
 

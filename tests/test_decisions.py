@@ -4,7 +4,7 @@ from datetime import datetime, timezone
 
 import pytest
 
-from sbom_reviewer import decisions as api
+from sbom_reviewer.saved_reviews import decisions as api
 from sbom_reviewer.models import DecisionEvent, ReviewResult
 
 

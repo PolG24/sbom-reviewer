@@ -10,7 +10,7 @@ from yaml.constructor import ConstructorError
 from yaml.events import AliasEvent
 from yaml.nodes import MappingNode, Node
 
-from sbom_reviewer.model_card_fetch import FetchedCard
+from sbom_reviewer.model_cards.fetch import FetchedCard
 from sbom_reviewer.models import EvidenceExcerpt, FindingCode, ModelAssessment, ModelFinding
 
 ALIASES = {
