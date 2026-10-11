@@ -202,6 +202,18 @@ def test_merged_duplicate_keys_are_not_silently_selected() -> None:
     assert codes(result) == ["invalid_metadata", "no_supported_indicators"]
 
 
+@pytest.mark.parametrize("metadata", [
+    "label: &label mit\nlicense: *label",
+    "defaults: &defaults {license: mit}\n<<: *defaults",
+])
+def test_yaml_aliases_are_invalid_metadata_without_losing_prose(metadata: str) -> None:
+    result = inspect(f"---\n{metadata}\n---\n## Limitations\nContext survives.\n")
+    assert result.status == "inspected"
+    assert result.normalized_license is None
+    assert codes(result) == ["invalid_metadata", "usage_context", "no_supported_indicators"]
+    assert result.findings[1].evidence.excerpt == "## Limitations\nContext survives.\n"
+
+
 @pytest.mark.parametrize("metadata", ["license: bad\x00value", "license: " + "9" * 5000], ids=["invalid-character", "oversized-number"])
 def test_metadata_reader_and_scalar_conversion_errors_are_findings(metadata: str) -> None:
     result = inspect(f"---\n{metadata}\n---\n## Limitations\nContext survives.\n")

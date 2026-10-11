@@ -7,6 +7,7 @@ from urllib.parse import urljoin, urlsplit
 import yaml
 from cyclonedx.spdx import is_supported_id
 from yaml.constructor import ConstructorError
+from yaml.events import AliasEvent
 from yaml.nodes import MappingNode, Node
 
 from sbom_reviewer.model_card_fetch import FetchedCard
@@ -35,6 +36,12 @@ LINK = re.compile(r'(?<!!)\[([^\]\n]+)\]\(\s*(<[^>\n]+>|[^\s)]+)(?:\s+["\'][^\n]
 
 class UniqueSafeLoader(yaml.SafeLoader):
     """SafeLoader with no silent duplicate-key overwrites (including merges)."""
+
+    def compose_node(self, parent: Node | None, index: Node | int | None) -> Node:
+        # Reject aliases before construction can expand nested YAML merges.
+        if self.check_event(AliasEvent):
+            raise ConstructorError(None, None, "YAML aliases are unsupported", self.peek_event().start_mark)
+        return super().compose_node(parent, index)
 
     def construct_mapping(self, node: MappingNode, deep: bool = False) -> dict:
         self.flatten_mapping(node)

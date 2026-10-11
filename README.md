@@ -105,7 +105,9 @@ non-models). Inspected cards record their retrieval URL, downloaded-byte SHA-256
 original and normalized metadata license, a separate `license_policy_decision`, and
 ordered findings with verbatim excerpts and inclusive source line ranges.
 `license_evidence` retains the metadata lines for policy conflict provenance.
-Safe YAML parsing rejects duplicate keys and unsafe tags. Missing, malformed, custom,
+Safe YAML parsing rejects duplicate keys, unsafe tags, and YAML aliases before
+expansion. Alias-based metadata produces `invalid_metadata`; supported prose is
+still collected. Missing, malformed, custom,
 unknown, or restricted metadata remains explicit evidence for Legal.
 Missing/unsupported references and retrieval failures produce component findings;
 review still emits complete JSON and exits 0, with no unrelated stderr warnings.
