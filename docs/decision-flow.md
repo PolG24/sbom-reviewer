@@ -10,6 +10,42 @@ review JSON. For valid inputs, every component is reviewed independently, includ
 the metadata component and nested components. Completed reviews exit **0**, including
 results containing **Reject** or **Needs review**.
 
+## Overview
+
+Each component receives a machine recommendation: **Allow**, **Needs review**, or
+**Reject**. The diagram shows the current behavior; **Allow** is a policy
+recommendation, not a recorded human approval.
+
+```mermaid
+flowchart TD
+    component["Component from a validated CycloneDX 1.6 SBOM"]
+    component --> model{"Type is machine-learning-model?"}
+    model -->|No: library or any other type| policy["Classify declared licenses against local policy"]
+    policy --> allow["Allow: one supported license in allowed"]
+    policy --> review["Needs review: missing, uncertain, or review-category license"]
+    policy --> reject["Reject: one supported license in rejected"]
+    model -->|Yes| evidence["Classify declared licenses; optionally inspect model card"]
+    evidence --> rejected{"SBOM license or inspected card metadata yields Reject?"}
+    rejected -->|Yes| reject
+    rejected -->|No| review
+    evidence -.-> scope["Fetch only with --fetch-model-cards; linked terms remain unread"]
+    allow --> result["Machine recommendation, reason, and evidence"]
+    review --> result
+    reject --> result
+    result -.-> human["Optional saved review: human confirms or overrides; machine result retained"]
+
+    classDef allowed fill:#dcfce7,stroke:#166534,color:#14532d
+    classDef needsReview fill:#fef3c7,stroke:#92400e,color:#78350f
+    classDef rejected fill:#fee2e2,stroke:#991b1b,color:#7f1d1d
+    class allow allowed
+    class review needsReview
+    class reject rejected
+```
+
+Models require manual review even with an allowed license, no external references,
+or no detected restriction indicators. External references on other component
+types do not trigger fetching or alter their license-policy result.
+
 ## 1. Declared-license policy
 
 This is the initial license classification for every component. For a library or
@@ -89,7 +125,7 @@ flowchart TD
 Exact duplicate reference URLs collapse before selection. Only references marked
 `model-card` are candidates; an arbitrary external reference is not fetched.
 Supported URLs identify a Hugging Face model repository or its `README.md` through
-a `blob` or `raw` revision route. The [README retrieval contract](../README.md#opt-in-model-card-inspection)
+a `blob` or `raw` revision route. The [model-card retrieval contract](model-cards.md)
 describes the precise URL restrictions and request limits.
 
 The final model decision uses this precedence:
