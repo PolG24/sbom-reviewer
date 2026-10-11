@@ -39,6 +39,19 @@ Jenkins validation is pending. The user must validate a committed revision conta
 these local changes and record its revision, build number, and result before this
 story can be marked Complete. No Jenkins build has been run or claimed here.
 
+### Review fixes (2026-10-11)
+
+Three separate fixes add focused regression tests: reject YAML aliases before
+merge expansion, preserve balanced/escaped parentheses in license links, and
+resolve relative terms by changing only the repository's `raw` route segment.
+Alias-based metadata is now unsupported and produces `invalid_metadata` while
+supported prose remains available.
+
+Fresh checks: `uv sync --locked` passed; `uv run --locked pytest` reported
+**337 passed**; the strict dependency audit found no known vulnerabilities;
+the offline sample retained **14 / 4 Allow / 9 Needs review / 1 Reject** with
+null assessments; `git diff --check` passed. Jenkins validation remains pending.
+
 ## User outcome
 
 As a Legal reviewer, I want the reviewer to read each AI model's license declaration and relevant usage passages from its model card, compare them with the SBOM and company policy, and flag custom or potentially restricted licensing with source evidence.

@@ -159,8 +159,12 @@ def _prose(lines: list[str], start: int) -> tuple[list[tuple[int, int]], list[tu
 def _reference_url(card: FetchedCard, target: str) -> str | None:
     if target.startswith("#"):
         return None
-    base = card.document_url.replace("/raw/", "/blob/", 1)
     try:
+        document = urlsplit(card.document_url)
+        parts = document.path.split("/")
+        if len(parts) == 6 and parts[3] == "raw":
+            parts[3] = "blob"
+        base = document._replace(path="/".join(parts)).geturl()
         resolved = urljoin(base, target)
         parsed = urlsplit(resolved)
     except ValueError:

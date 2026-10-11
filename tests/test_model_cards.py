@@ -169,6 +169,23 @@ def test_parenthesized_license_links_preserve_the_complete_url(destination: str,
     assert [url for url, _ in referenced_terms(card)] == [expected]
 
 
+@pytest.mark.parametrize("path, expected_base", [
+    ("raw/model/raw/main", "raw/model/blob/main"),
+    ("test/raw/raw/main", "test/raw/blob/main"),
+    ("test/model/raw/raw", "test/model/blob/raw"),
+])
+def test_relative_terms_only_replace_the_raw_route(path: str, expected_base: str) -> None:
+    from sbom_reviewer.model_card_fetch import FetchedCard
+    from sbom_reviewer.model_cards import inspect_model_card, referenced_terms
+
+    text = "---\nlicense: MIT\nlicense_link: LICENSE\n---\n## License\nRead [terms](TERMS.md).\n"
+    card = FetchedCard(f"https://huggingface.co/{path}/README.md", text, hashlib.sha256(text.encode()).hexdigest())
+    expected = [f"https://huggingface.co/{expected_base}/LICENSE", f"https://huggingface.co/{expected_base}/TERMS.md"]
+    assert [url for url, _ in referenced_terms(card)] == expected
+    terms = [f for f in inspect_model_card(card).findings if f.code == "referenced_terms_unread"]
+    assert [f.message for f in terms] == [f"Referenced terms at {url} were not fetched or assessed." for url in expected]
+
+
 def test_duplicate_fixture_metadata_is_invalid_without_silently_selecting_license() -> None:
     result = inspect((FIXTURES / "invalid.md").read_text())
     assert result.normalized_license is None
