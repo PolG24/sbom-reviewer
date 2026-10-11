@@ -51,6 +51,10 @@ invalid JSON/policy/schema, and unsupported formats/versions exit **2**, with an
 error on stderr and no review JSON. The dependency audit retains its separate
 strict failure contract.
 
+SBOM and policy JSON reject the nonstandard numeric tokens `NaN`, `Infinity`,
+and `-Infinity` before schema validation. These words inside quoted strings remain
+ordinary input data.
+
 `policy/licenses.json` is an example company policy, not universal legal judgments.
 All categories and a nonempty version are required; duplicate/overlapping entries,
 extra fields, and wrong types are rejected. Categories may be empty. Matching is

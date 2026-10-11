@@ -8,6 +8,46 @@ from typing import Any
 import pytest
 
 
+@pytest.mark.parametrize("target", ["SBOM", "policy"])
+@pytest.mark.parametrize("constant", ["NaN", "Infinity", "-Infinity"])
+def test_non_json_constants_are_rejected_at_the_parse_boundary(tmp_path: Path, target: str, constant: str) -> None:
+    # Reject these tokens even where the schema would otherwise produce an error;
+    # the policy and SBOM loaders must use the same strict JSON contract.
+    from sbom_reviewer.policy import load_policy
+    from sbom_reviewer.sbom import load_sbom
+
+    path = tmp_path / "non-json.json"
+    text = (
+        '{"bomFormat":"CycloneDX","specVersion":"1.6","components":[],"version":' + constant + '}'
+        if target == "SBOM" else
+        '{"version":"test","allowed":[' + constant + '],"review":[],"rejected":[]}'
+    )
+    path.write_text(text, encoding="utf-8")
+    loader = load_sbom if target == "SBOM" else load_policy
+    with pytest.raises(ValueError, match="Invalid JSON numeric constant"):
+        loader(path)
+
+
+def test_numeric_constant_names_inside_strings_remain_declarations(tmp_path: Path) -> None:
+    from sbom_reviewer.policy import load_policy, review_components
+    from sbom_reviewer.sbom import load_sbom
+
+    sbom = tmp_path / "quoted.json"
+    sbom.write_text(json.dumps({
+        "bomFormat": "CycloneDX", "specVersion": "1.6", "components": [{
+            "type": "library", "name": "NaN Infinity -Infinity",
+            "licenses": [{"license": {"name": "NaN Infinity -Infinity"}}],
+        }],
+    }), encoding="utf-8")
+    policy = tmp_path / "policy.json"
+    policy.write_text(json.dumps({"version": "NaN", "allowed": ["Infinity"], "review": [], "rejected": []}), encoding="utf-8")
+    result = review_components(load_sbom(sbom), load_policy(policy))
+    assert result.policy_version == "NaN"
+    assert result.results[0].name == "NaN Infinity -Infinity"
+    assert result.results[0].declared_licenses == ["NaN Infinity -Infinity"]
+    assert result.results[0].decision == "Needs review"
+
+
 @pytest.mark.parametrize("constant", ["NaN", "Infinity", "-Infinity"])
 def test_non_json_numeric_constants_are_input_errors(tmp_path: Path, constant: str) -> None:
     # Catches Python's permissive JSON decoder passing invalid JSON numbers into

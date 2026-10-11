@@ -1,6 +1,5 @@
 """Validate CycloneDX 1.6 locally and adapt the original declarations."""
 
-import json
 from collections.abc import Iterator
 from pathlib import Path
 from typing import Any
@@ -12,6 +11,7 @@ from cyclonedx.schema import SchemaVersion
 from cyclonedx.spdx import is_supported_id
 from cyclonedx.validation.json import JsonStrictValidator
 
+from sbom_reviewer.json_input import parse_json
 from sbom_reviewer.models import Component, LicenseDeclaration, SourceReference
 
 
@@ -82,7 +82,7 @@ def normalize_component(raw: dict[str, Any], pointer: str) -> Component:
 
 def load_sbom(path: Path) -> list[Component]:
     text = path.read_text(encoding="utf-8")
-    document = json.loads(text)
+    document = parse_json(text)
     if not isinstance(document, dict) or document.get("bomFormat") != "CycloneDX":
         raise ValueError("Unsupported SBOM format: provide a CycloneDX JSON 1.6 object.")
     if document.get("specVersion") != "1.6":

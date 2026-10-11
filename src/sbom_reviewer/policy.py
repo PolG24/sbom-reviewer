@@ -1,18 +1,18 @@
 """Local policy loading and deterministic declared-license recommendations."""
 
-import json
 import re
 from pathlib import Path
 
 from cyclonedx.spdx import is_supported_id
 
+from sbom_reviewer.json_input import parse_json
 from sbom_reviewer.models import (
     Component, ComponentResult, Decision, LicenseDeclaration, Policy, ReviewResult, Summary,
 )
 
 
 def load_policy(path: Path) -> Policy:
-    return Policy.model_validate(json.loads(path.read_text(encoding="utf-8")))
+    return Policy.model_validate(parse_json(path.read_text(encoding="utf-8")))
 
 
 def classify_licenses(licenses: list[LicenseDeclaration], policy: Policy) -> tuple[Decision, str]:
