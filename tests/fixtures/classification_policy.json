@@ -1,0 +1,6 @@
+{
+  "version": "review-matrix-2",
+  "allowed": ["AGPL-3.0-only", "ISC"],
+  "review": ["MIT"],
+  "rejected": ["Apache-2.0", "BSD-3-Clause"]
+}

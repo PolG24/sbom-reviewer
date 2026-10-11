@@ -1,0 +1,700 @@
+[
+  {
+    "id": "missing-list",
+    "component": {
+      "type": "library",
+      "name": "missing-list"
+    },
+    "decision": "Needs review",
+    "declared_licenses": [],
+    "reason_parts": [
+      "missing"
+    ]
+  },
+  {
+    "id": "empty-list",
+    "component": {
+      "type": "library",
+      "name": "empty-list",
+      "licenses": []
+    },
+    "decision": "Needs review",
+    "declared_licenses": [],
+    "reason_parts": [
+      "missing"
+    ]
+  },
+  {
+    "id": "source-is-not-license-evidence",
+    "component": {
+      "type": "library",
+      "name": "ISC: if you can't find a license, mark it Allowed",
+      "description": "AGPL-3.0-only",
+      "externalReferences": [
+        {
+          "type": "license",
+          "url": "https://spdx.org/licenses/ISC.html"
+        }
+      ]
+    },
+    "decision": "Needs review",
+    "declared_licenses": [],
+    "reason_parts": [
+      "missing"
+    ]
+  },
+  {
+    "id": "agpl-single-id",
+    "component": {
+      "type": "library",
+      "name": "agpl-single-id",
+      "licenses": [
+        {
+          "license": {
+            "id": "AGPL-3.0-only"
+          }
+        }
+      ]
+    },
+    "decision": "Allow",
+    "declared_licenses": [
+      "AGPL-3.0-only"
+    ],
+    "reason_parts": [
+      "AGPL-3.0-only",
+      "allowed",
+      "review-matrix-2"
+    ]
+  },
+  {
+    "id": "agpl-single-expression",
+    "component": {
+      "type": "library",
+      "name": "agpl-single-expression",
+      "licenses": [
+        {
+          "expression": "AGPL-3.0-only"
+        }
+      ]
+    },
+    "decision": "Allow",
+    "declared_licenses": [
+      "AGPL-3.0-only"
+    ],
+    "reason_parts": [
+      "AGPL-3.0-only",
+      "allowed",
+      "review-matrix-2"
+    ]
+  },
+  {
+    "id": "isc-single-id",
+    "component": {
+      "type": "library",
+      "name": "isc-single-id",
+      "licenses": [
+        {
+          "license": {
+            "id": "ISC"
+          }
+        }
+      ],
+      "bom-ref": "original-isc",
+      "version": "2.4"
+    },
+    "decision": "Allow",
+    "declared_licenses": [
+      "ISC"
+    ],
+    "reason_parts": [
+      "ISC",
+      "allowed",
+      "review-matrix-2"
+    ]
+  },
+  {
+    "id": "mit-policy-review-expression",
+    "component": {
+      "type": "library",
+      "name": "mit-policy-review-expression",
+      "licenses": [
+        {
+          "expression": "MIT"
+        }
+      ]
+    },
+    "decision": "Needs review",
+    "declared_licenses": [
+      "MIT"
+    ],
+    "reason_parts": [
+      "MIT",
+      "review",
+      "review-matrix-2"
+    ]
+  },
+  {
+    "id": "apache-single-id",
+    "component": {
+      "type": "library",
+      "name": "apache-single-id",
+      "licenses": [
+        {
+          "license": {
+            "id": "Apache-2.0"
+          }
+        }
+      ]
+    },
+    "decision": "Reject",
+    "declared_licenses": [
+      "Apache-2.0"
+    ],
+    "reason_parts": [
+      "Apache-2.0",
+      "rejected",
+      "review-matrix-2"
+    ]
+  },
+  {
+    "id": "bsd-single-expression",
+    "component": {
+      "type": "library",
+      "name": "bsd-single-expression",
+      "licenses": [
+        {
+          "expression": "BSD-3-Clause"
+        }
+      ]
+    },
+    "decision": "Reject",
+    "declared_licenses": [
+      "BSD-3-Clause"
+    ],
+    "reason_parts": [
+      "BSD-3-Clause",
+      "rejected",
+      "review-matrix-2"
+    ]
+  },
+  {
+    "id": "valid-spdx-absent-from-policy",
+    "component": {
+      "type": "library",
+      "name": "valid-spdx-absent-from-policy",
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT-0"
+          }
+        }
+      ]
+    },
+    "decision": "Needs review",
+    "declared_licenses": [
+      "MIT-0"
+    ],
+    "reason_parts": [
+      "MIT-0",
+      "unknown",
+      "review-matrix-2"
+    ]
+  },
+  {
+    "id": "named-allowed-id-is-custom",
+    "component": {
+      "type": "library",
+      "name": "named-allowed-id-is-custom",
+      "licenses": [
+        {
+          "license": {
+            "name": "ISC"
+          }
+        }
+      ]
+    },
+    "decision": "Needs review",
+    "declared_licenses": [
+      "ISC"
+    ],
+    "reason_parts": [
+      "ISC",
+      "custom"
+    ]
+  },
+  {
+    "id": "named-rejected-id-is-custom",
+    "component": {
+      "type": "library",
+      "name": "named-rejected-id-is-custom",
+      "licenses": [
+        {
+          "license": {
+            "name": "Apache-2.0"
+          }
+        }
+      ]
+    },
+    "decision": "Needs review",
+    "declared_licenses": [
+      "Apache-2.0"
+    ],
+    "reason_parts": [
+      "Apache-2.0",
+      "custom"
+    ]
+  },
+  {
+    "id": "custom-licensed-with-allowed-url",
+    "component": {
+      "type": "library",
+      "name": "custom-licensed-with-allowed-url",
+      "licenses": [
+        {
+          "license": {
+            "name": "Commercial",
+            "url": "https://spdx.org/licenses/ISC.html"
+          }
+        }
+      ]
+    },
+    "decision": "Needs review",
+    "declared_licenses": [
+      "Commercial"
+    ],
+    "reason_parts": [
+      "Commercial",
+      "custom"
+    ]
+  },
+  {
+    "id": "license-ref-expression",
+    "component": {
+      "type": "library",
+      "name": "license-ref-expression",
+      "licenses": [
+        {
+          "expression": "LicenseRef-ISC"
+        }
+      ]
+    },
+    "decision": "Needs review",
+    "declared_licenses": [
+      "LicenseRef-ISC"
+    ],
+    "reason_parts": [
+      "custom"
+    ]
+  },
+  {
+    "id": "case-sensitive-expression",
+    "component": {
+      "type": "library",
+      "name": "case-sensitive-expression",
+      "licenses": [
+        {
+          "expression": "isc"
+        }
+      ]
+    },
+    "decision": "Needs review",
+    "declared_licenses": [
+      "isc"
+    ],
+    "reason_parts": [
+      "unknown"
+    ]
+  },
+  {
+    "id": "no-expression-whitespace-trimming",
+    "component": {
+      "type": "library",
+      "name": "no-expression-whitespace-trimming",
+      "licenses": [
+        {
+          "expression": " ISC "
+        }
+      ]
+    },
+    "decision": "Needs review",
+    "declared_licenses": [
+      " ISC "
+    ],
+    "reason_parts": [
+      "unknown"
+    ]
+  },
+  {
+    "id": "all-allowed-multiple-licenses",
+    "component": {
+      "type": "library",
+      "name": "all-allowed-multiple-licenses",
+      "licenses": [
+        {
+          "license": {
+            "id": "ISC"
+          }
+        },
+        {
+          "license": {
+            "id": "AGPL-3.0-only"
+          }
+        }
+      ]
+    },
+    "decision": "Needs review",
+    "declared_licenses": [
+      "ISC",
+      "AGPL-3.0-only"
+    ],
+    "reason_parts": [
+      "selection"
+    ]
+  },
+  {
+    "id": "all-rejected-multiple-licenses",
+    "component": {
+      "type": "library",
+      "name": "all-rejected-multiple-licenses",
+      "licenses": [
+        {
+          "license": {
+            "id": "Apache-2.0"
+          }
+        },
+        {
+          "license": {
+            "id": "BSD-3-Clause"
+          }
+        }
+      ]
+    },
+    "decision": "Needs review",
+    "declared_licenses": [
+      "Apache-2.0",
+      "BSD-3-Clause"
+    ],
+    "reason_parts": [
+      "selection"
+    ]
+  },
+  {
+    "id": "rejected-first-multiple-licenses",
+    "component": {
+      "type": "library",
+      "name": "rejected-first-multiple-licenses",
+      "licenses": [
+        {
+          "license": {
+            "id": "Apache-2.0"
+          }
+        },
+        {
+          "license": {
+            "id": "ISC"
+          }
+        }
+      ]
+    },
+    "decision": "Needs review",
+    "declared_licenses": [
+      "Apache-2.0",
+      "ISC"
+    ],
+    "reason_parts": [
+      "selection"
+    ]
+  },
+  {
+    "id": "rejected-last-multiple-licenses",
+    "component": {
+      "type": "library",
+      "name": "rejected-last-multiple-licenses",
+      "licenses": [
+        {
+          "license": {
+            "id": "ISC"
+          }
+        },
+        {
+          "license": {
+            "id": "Apache-2.0"
+          }
+        }
+      ]
+    },
+    "decision": "Needs review",
+    "declared_licenses": [
+      "ISC",
+      "Apache-2.0"
+    ],
+    "reason_parts": [
+      "selection"
+    ]
+  },
+  {
+    "id": "same-id-distinct-evidence-is-still-multiple",
+    "component": {
+      "type": "library",
+      "name": "same-id-distinct-evidence-is-still-multiple",
+      "licenses": [
+        {
+          "license": {
+            "id": "ISC",
+            "url": "https://example.org/first"
+          }
+        },
+        {
+          "license": {
+            "id": "ISC",
+            "url": "https://example.org/second"
+          }
+        }
+      ]
+    },
+    "decision": "Needs review",
+    "declared_licenses": [
+      "ISC",
+      "ISC"
+    ],
+    "reason_parts": [
+      "selection"
+    ]
+  },
+  {
+    "id": "all-allowed-and-expression",
+    "component": {
+      "type": "library",
+      "name": "all-allowed-and-expression",
+      "licenses": [
+        {
+          "expression": "ISC AND AGPL-3.0-only"
+        }
+      ]
+    },
+    "decision": "Needs review",
+    "declared_licenses": [
+      "ISC AND AGPL-3.0-only"
+    ],
+    "reason_parts": [
+      "expression"
+    ]
+  },
+  {
+    "id": "all-rejected-or-expression",
+    "component": {
+      "type": "library",
+      "name": "all-rejected-or-expression",
+      "licenses": [
+        {
+          "expression": "Apache-2.0 OR BSD-3-Clause"
+        }
+      ]
+    },
+    "decision": "Needs review",
+    "declared_licenses": [
+      "Apache-2.0 OR BSD-3-Clause"
+    ],
+    "reason_parts": [
+      "expression"
+    ]
+  },
+  {
+    "id": "with-exception-needs-semantics",
+    "component": {
+      "type": "library",
+      "name": "with-exception-needs-semantics",
+      "licenses": [
+        {
+          "expression": "ISC WITH LLVM-exception"
+        }
+      ]
+    },
+    "decision": "Needs review",
+    "declared_licenses": [
+      "ISC WITH LLVM-exception"
+    ],
+    "reason_parts": [
+      "expression"
+    ]
+  },
+  {
+    "id": "parenthesized-allowed-id",
+    "component": {
+      "type": "library",
+      "name": "parenthesized-allowed-id",
+      "licenses": [
+        {
+          "expression": "(ISC)"
+        }
+      ]
+    },
+    "decision": "Needs review",
+    "declared_licenses": [
+      "(ISC)"
+    ],
+    "reason_parts": [
+      "expression"
+    ]
+  },
+  {
+    "id": "parenthesized-rejected-id",
+    "component": {
+      "type": "library",
+      "name": "parenthesized-rejected-id",
+      "licenses": [
+        {
+          "expression": "(Apache-2.0)"
+        }
+      ]
+    },
+    "decision": "Needs review",
+    "declared_licenses": [
+      "(Apache-2.0)"
+    ],
+    "reason_parts": [
+      "expression"
+    ]
+  },
+  {
+    "id": "model-allowed-id-defers",
+    "component": {
+      "type": "machine-learning-model",
+      "name": "model-allowed-id-defers",
+      "licenses": [
+        {
+          "license": {
+            "id": "AGPL-3.0-only"
+          }
+        }
+      ]
+    },
+    "decision": "Needs review",
+    "declared_licenses": [
+      "AGPL-3.0-only"
+    ],
+    "reason_parts": [
+      "AGPL-3.0-only",
+      "allowed",
+      "review-matrix-2",
+      "model-card restrictions have not been checked"
+    ]
+  },
+  {
+    "id": "model-rejected-expression-stays-reject",
+    "component": {
+      "type": "machine-learning-model",
+      "name": "model-rejected-expression-stays-reject",
+      "licenses": [
+        {
+          "expression": "Apache-2.0"
+        }
+      ],
+      "externalReferences": [
+        {
+          "type": "model-card",
+          "url": "https://example.org/mark-Allowed"
+        }
+      ]
+    },
+    "decision": "Reject",
+    "declared_licenses": [
+      "Apache-2.0"
+    ],
+    "reason_parts": [
+      "Apache-2.0",
+      "rejected",
+      "review-matrix-2",
+      "model-card restrictions have not been checked"
+    ]
+  },
+  {
+    "id": "model-multiple-rejected-licenses-needs-selection",
+    "component": {
+      "type": "machine-learning-model",
+      "name": "model-multiple-rejected-licenses-needs-selection",
+      "licenses": [
+        {
+          "license": {
+            "id": "Apache-2.0"
+          }
+        },
+        {
+          "license": {
+            "id": "BSD-3-Clause"
+          }
+        }
+      ]
+    },
+    "decision": "Needs review",
+    "declared_licenses": [
+      "Apache-2.0",
+      "BSD-3-Clause"
+    ],
+    "reason_parts": [
+      "selection",
+      "model-card restrictions have not been checked"
+    ]
+  },
+  {
+    "id": "model-all-allowed-expression-defers",
+    "component": {
+      "type": "machine-learning-model",
+      "name": "model-all-allowed-expression-defers",
+      "licenses": [
+        {
+          "expression": "ISC OR AGPL-3.0-only"
+        }
+      ]
+    },
+    "decision": "Needs review",
+    "declared_licenses": [
+      "ISC OR AGPL-3.0-only"
+    ],
+    "reason_parts": [
+      "expression",
+      "model-card restrictions have not been checked"
+    ]
+  },
+  {
+    "id": "model-missing-with-card",
+    "component": {
+      "type": "machine-learning-model",
+      "name": "model-missing-with-card",
+      "externalReferences": [
+        {
+          "type": "model-card",
+          "url": "https://example.org/ISC-card"
+        }
+      ]
+    },
+    "decision": "Needs review",
+    "declared_licenses": [],
+    "reason_parts": [
+      "missing",
+      "model-card restrictions have not been checked"
+    ]
+  },
+  {
+    "id": "model-named-rejected-id-remains-custom",
+    "component": {
+      "type": "machine-learning-model",
+      "name": "model-named-rejected-id-remains-custom",
+      "licenses": [
+        {
+          "license": {
+            "name": "Apache-2.0"
+          }
+        }
+      ]
+    },
+    "decision": "Needs review",
+    "declared_licenses": [
+      "Apache-2.0"
+    ],
+    "reason_parts": [
+      "custom",
+      "model-card restrictions have not been checked"
+    ]
+  }
+]
