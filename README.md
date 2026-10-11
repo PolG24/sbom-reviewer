@@ -49,10 +49,11 @@ checks locked application and development dependencies. See
 
 [Sample SBOM](presentation/sboms/challenge.cyclonedx.json) ·
 [License policy](presentation/policy/licenses.json) ·
-[Generated report](presentation/reports/challenge-review.html) ·
+[Offline report](presentation/reports/challenge-review.html) ·
+[Model-card report](presentation/reports/challenge-review-model-cards.html) ·
 [Presentation pack](presentation/README.md)
 
-The report is an illustrative offline baseline: **4 Allow / 9 Needs review /
+The offline report is an illustrative baseline: **4 Allow / 9 Needs review /
 1 Reject**, with all 14 human decisions pending and no model cards fetched.
 
 ## Known limitations
