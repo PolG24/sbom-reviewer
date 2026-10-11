@@ -2,6 +2,45 @@
 
 First pass review of Software Bills of Materials (SBOMs) for legal acceleration.
 
+## Component decision flow
+
+Each component receives a machine recommendation: **Allow**, **Needs review**, or
+**Reject**. The diagram shows the current behavior; **Allow** is a policy
+recommendation, not a recorded human approval.
+
+```mermaid
+flowchart TD
+    component["Component from a validated CycloneDX 1.6 SBOM"]
+    component --> model{"Type is machine-learning-model?"}
+    model -->|No: library or any other type| policy["Classify declared licenses against local policy"]
+    policy --> allow["Allow: one supported license in allowed"]
+    policy --> review["Needs review: missing, uncertain, or review-category license"]
+    policy --> reject["Reject: one supported license in rejected"]
+    model -->|Yes| evidence["Classify declared licenses; optionally inspect model card"]
+    evidence --> rejected{"SBOM license or inspected card metadata yields Reject?"}
+    rejected -->|Yes| reject
+    rejected -->|No| review
+    evidence -.-> scope["Fetch only with --fetch-model-cards; linked terms remain unread"]
+    allow --> result["Machine recommendation, reason, and evidence"]
+    review --> result
+    reject --> result
+    result -.-> human["Optional saved review: human confirms or overrides; machine result retained"]
+
+    classDef allowed fill:#dcfce7,stroke:#166534,color:#14532d
+    classDef needsReview fill:#fef3c7,stroke:#92400e,color:#78350f
+    classDef rejected fill:#fee2e2,stroke:#991b1b,color:#7f1d1d
+    class allow allowed
+    class review needsReview
+    class reject rejected
+```
+
+Models require manual review even with an allowed license, no external references,
+or no detected restriction indicators. External references on other component
+types do not trigger fetching or alter their license-policy result.
+
+See the [detailed decision graphs](docs/decision-flow.md) for license matching,
+model-card retrieval and evidence handling, and recorded human decisions.
+
 ## Development
 
 Install Python 3.12 and [uv](https://docs.astral.sh/uv/), then install the locked dependencies:
