@@ -1,5 +1,10 @@
 # Two-component presentation walkthrough
 
+This walkthrough uses `sboms/demo.cyclonedx.json`. The full challenge inventory,
+policy, and generated report are listed in the [presentation pack](README.md).
+Use `challenge.cyclonedx.json` in the UI to show the full deliverable; the counts
+and component pointers below refer to `demo.cyclonedx.json`.
+
 Run these blocks **from the repository root**, in order. Read the notes between
 steps; they explain what to point out to the panel. The illustrative inventory has
 a fictional MIT library and the real `sentence-transformers/all-MiniLM-L6-v2`
@@ -25,10 +30,10 @@ Saving reviews and exporting reports refuse to overwrite existing files.
 For the same review and decision flow with buttons instead of individual commands:
 
 ```bash
-uv run --locked sbom-reviewer ui --sbom-dir presentation --policy policy/licenses.json --review-dir presentation/output/ui
+uv run --locked sbom-reviewer ui --sbom-dir presentation/sboms --policy presentation/policy/licenses.json --review-dir presentation/output/ui
 ```
 
-Open the printed local URL. Select `cyclonedx.json`, optionally enable model-card
+Open the printed local URL. Select `demo.cyclonedx.json`, optionally enable model-card
 fetching, and run machine review. Enter `Panel Reviewer` at the top. Inspect the
 library and model evidence, then confirm or override each recommendation with an
 explicit rationale. The page shows the original machine result alongside the
@@ -45,7 +50,7 @@ Stop the server with Ctrl-C. The CLI walkthrough below remains available.
 ## 1. Start with declarations only
 
 ```bash
-uv run --locked sbom-reviewer review presentation/cyclonedx.json --policy policy/licenses.json
+uv run --locked sbom-reviewer review presentation/sboms/demo.cyclonedx.json --policy presentation/policy/licenses.json
 ```
 
 Look at the two results:
@@ -62,7 +67,7 @@ version stays null; the library's version is preserved.
 Now save exactly that result and export it:
 
 ```bash
-uv run --locked sbom-reviewer review presentation/cyclonedx.json --policy policy/licenses.json --save-review presentation/output/baseline.sqlite
+uv run --locked sbom-reviewer review presentation/sboms/demo.cyclonedx.json --policy presentation/policy/licenses.json --save-review presentation/output/baseline.sqlite
 uv run --locked sbom-reviewer export presentation/output/baseline.sqlite --output presentation/output/00-baseline.html
 ```
 
@@ -75,7 +80,7 @@ The SBOM's model-card reference points to the real MiniLM repository. Run the
 existing CLI with its opt-in fetch flag:
 
 ```bash
-uv run --locked sbom-reviewer review presentation/cyclonedx.json --policy policy/licenses.json --fetch-model-cards --save-review presentation/output/review.sqlite
+uv run --locked sbom-reviewer review presentation/sboms/demo.cyclonedx.json --policy presentation/policy/licenses.json --fetch-model-cards --save-review presentation/output/review.sqlite
 ```
 
 Inspect `model_assessment` in the printed model result:

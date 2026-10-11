@@ -2,6 +2,9 @@
 
 First pass review of Software Bills of Materials (SBOMs) for legal acceleration.
 
+The [presentation pack](presentation/README.md) contains the full challenge SBOM,
+focused demo SBOM, policy, generated sample report, and walkthrough commands.
+
 ## Component decision flow
 
 Each component receives a machine recommendation: **Allow**, **Needs review**, or
@@ -52,8 +55,8 @@ uv sync --locked
 Review a CycloneDX JSON **1.6** inventory against a local policy:
 
 ```bash
-uv run --locked sbom-reviewer review samples/cyclonedx.json --policy policy/licenses.json
-uv run --locked sbom-reviewer review samples/cyclonedx.json --policy policy/licenses.json > review.json
+uv run --locked sbom-reviewer review presentation/sboms/challenge.cyclonedx.json --policy presentation/policy/licenses.json
+uv run --locked sbom-reviewer review presentation/sboms/challenge.cyclonedx.json --policy presentation/policy/licenses.json > review.json
 ```
 
 Help is available at both levels:
@@ -97,7 +100,7 @@ Both inputs allow at most **128 nested JSON object/array levels**, counting the 
 container as level 1. Deeper inputs exit 2 with a nesting-limit message before
 schema validation or deserialization; they never return a truncated review.
 
-`policy/licenses.json` is an example company policy, not universal legal judgments.
+`presentation/policy/licenses.json` is an example company policy, not universal legal judgments.
 All categories and a nonempty version are required; duplicate/overlapping entries,
 extra fields, and wrong types are rejected. Categories may be empty. Matching is
 case-sensitive and exact, for a single SPDX ID or an expression containing exactly
@@ -125,7 +128,7 @@ unverified input evidence, not independently verified licensing advice.
 ## Opt-in model-card inspection
 
 ```bash
-uv run --locked sbom-reviewer review samples/cyclonedx.json --policy policy/licenses.json --fetch-model-cards
+uv run --locked sbom-reviewer review presentation/sboms/challenge.cyclonedx.json --policy presentation/policy/licenses.json --fetch-model-cards
 ```
 
 Only `machine-learning-model` components are fetched, sequentially, using their SBOM
@@ -174,14 +177,14 @@ license expressions, license compatibility, vulnerabilities, or SPDX documents.
 
 ## Saved reviews and reviewer decisions
 
-For a two-component rehearsal with an offline card fixture, SQLite inspection,
-and successive reports, follow [the presentation walkthrough](presentation/COMMANDS.md).
+For a two-component rehearsal with optional live model-card fetching and successive
+reports, follow [the presentation walkthrough](presentation/COMMANDS.md).
 
 Save a complete machine review to a **new** SQLite file, record individual human
 actions, inspect the resulting JSON, and export a standalone HTML report:
 
 ```bash
-uv run --locked sbom-reviewer review samples/cyclonedx.json --policy policy/licenses.json --save-review review.sqlite
+uv run --locked sbom-reviewer review presentation/sboms/challenge.cyclonedx.json --policy presentation/policy/licenses.json --save-review review.sqlite
 uv run --locked sbom-reviewer show review.sqlite
 uv run --locked sbom-reviewer decide review.sqlite --component '#/components/0' --confirm --reviewer 'Example Reviewer' --reason 'Reviewed the supplied declaration and agree with the recommendation.'
 uv run --locked sbom-reviewer decide review.sqlite --component '#/components/10' --override Allow --reviewer 'Example Reviewer' --reason 'Illustrative reviewer override for the demo; actual licensing remains to be verified.'
@@ -238,7 +241,7 @@ Run the presentation workflow in a browser, using the same review engine and
 SQLite decision history as the CLI:
 
 ```bash
-uv run --locked sbom-reviewer ui --sbom-dir presentation --policy policy/licenses.json --review-dir presentation/output/ui
+uv run --locked sbom-reviewer ui --sbom-dir presentation/sboms --policy presentation/policy/licenses.json --review-dir presentation/output/ui
 ```
 
 Open the printed URL (normally `http://127.0.0.1:8765`). Use `--port 8766` if

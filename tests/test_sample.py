@@ -9,7 +9,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 def test_sample_inventory_has_expected_findings_and_repeatable_json() -> None:
-    args = ["sbom-reviewer", "review", str(ROOT / "samples/cyclonedx.json"), "--policy", str(ROOT / "policy/licenses.json")]
+    args = ["sbom-reviewer", "review", str(ROOT / "presentation/sboms/challenge.cyclonedx.json"), "--policy", str(ROOT / "presentation/policy/licenses.json")]
     result = subprocess.run(args, check=False, capture_output=True, text=True)
     assert result.returncode == 0, result.stderr
     assert result.stderr == ""
