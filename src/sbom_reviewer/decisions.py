@@ -5,28 +5,32 @@ from sbom_reviewer.models import (
 )
 
 
+class DecisionError(ValueError):
+    """An expected invalid reviewer action."""
+
+
 def prepare_decision(
     snapshot: ReviewResult, component_id: str, *, reviewer: str, reason: str,
     confirm: bool = False, override: str | None = None,
 ) -> PreparedDecision:
     if confirm == (override is not None):
-        raise ValueError("Choose exactly one of confirm or override.")
+        raise DecisionError("Choose exactly one of confirm or override.")
     if not reviewer.strip():
-        raise ValueError("A nonblank reviewer name is required.")
+        raise DecisionError("A nonblank reviewer name is required.")
     if not reason.strip():
-        raise ValueError("A nonblank reason is required.")
+        raise DecisionError("A nonblank reason is required.")
     component = next((item for item in snapshot.results if item.component_id == component_id), None)
     if component is None:
-        raise ValueError(f"Unknown component ID: {component_id}")
+        raise DecisionError(f"Unknown component ID: {component_id}")
     if confirm:
         decision = component.decision
     else:
         try:
             decision = Decision(override)
         except ValueError as exc:
-            raise ValueError("Invalid outcome; choose Allow, Needs review, or Reject.") from exc
+            raise DecisionError("Invalid outcome; choose Allow, Needs review, or Reject.") from exc
         if decision == component.decision:
-            raise ValueError("Use confirm recommendation when agreeing with the machine recommendation.")
+            raise DecisionError("Use confirm recommendation when agreeing with the machine recommendation.")
     return PreparedDecision(component_id=component_id, action="confirm" if confirm else "override",
                             decision=decision, reviewer=reviewer, reason=reason)
 
