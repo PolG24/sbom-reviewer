@@ -54,6 +54,9 @@ strict failure contract.
 SBOM and policy JSON reject the nonstandard numeric tokens `NaN`, `Infinity`,
 and `-Infinity` before schema validation. These words inside quoted strings remain
 ordinary input data.
+Both inputs allow at most **128 nested JSON object/array levels**, counting the root
+container as level 1. Deeper inputs exit 2 with a nesting-limit message before
+schema validation or deserialization; they never return a truncated review.
 
 `policy/licenses.json` is an example company policy, not universal legal judgments.
 All categories and a nonempty version are required; duplicate/overlapping entries,

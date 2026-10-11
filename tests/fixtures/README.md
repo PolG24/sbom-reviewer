@@ -18,6 +18,7 @@ computes expected decisions. Model-card inspection remains deferred in this
 story. Multiple declarations require selection review even when all entries
 are rejected; a single rejected model declaration remains Reject.
 
-`test_review_input_edges.py` retains failing reproductions for review findings.
-They are deliberately neither skipped nor marked xfail: source changes are
-outside this review's scope, and the failures should remain visible until fixed.
+`test_review_input_edges.py` retains the regressions for non-JSON numeric
+constants and excessive input nesting. They remain active tests without skips or
+xfails. `test_json_nesting.py` also checks the documented 128-level boundary,
+decoder recursion errors, quoted strings, and complete supported inventories.

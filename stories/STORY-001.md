@@ -21,9 +21,35 @@ Local acceptance on 2026-10-10:
 - `git diff --check`: passed.
 
 Model-card inspection and human decisions remain deferred. No referenced SBOM
-content is fetched. Jenkins validation has **not** been performed: the user must
-build the committed `story-001` revision, verify Tests and Dependency audit, and
-record the revision, build number, and result before marking this story Complete.
+content is fetched. On 2026-10-11, the user reported that the prior implementation
+passed Jenkins; the tested revision and build number were not supplied. The
+edge-case fixes below require Jenkins validation of their committed revision,
+with Tests and Dependency audit passing, before marking this story Complete.
+
+### Edge-case follow-up (2026-10-11)
+
+The new tests at `0d3a270` produced **142 passed / 2 failed**:
+
+- `test_non_json_numeric_constants_are_input_errors[NaN]`: permissive JSON parsing
+  allowed a non-JSON number to reach deserialization and raise `decimal.InvalidOperation`.
+  A shared parser now rejects `NaN`, `Infinity`, and `-Infinity` before schema
+  validation for both SBOM and policy inputs. Quoted strings remain unchanged.
+- `test_deep_inventory_completes_or_reports_actionable_input_limit`: schema validation
+  exhausted recursion on a deeply nested inventory. An iterative preflight now
+  limits both inputs to 128 JSON object/array levels; decoder recursion errors
+  receive the same actionable nesting message. No inventory is truncated.
+
+Each fix has a separate commit. The original reproductions and classification
+matrix remain active without weakened assertions, skips, or xfails.
+
+Follow-up acceptance:
+
+- `uv sync --locked`: passed.
+- `uv run --locked pytest`: **166 passed**.
+- `sh scripts/audit-dependencies.sh`: passed; **No known vulnerabilities found**.
+- `uv run --locked sbom-reviewer review samples/cyclonedx.json --policy policy/licenses.json`:
+  exit 0; unchanged **13 total / 4 Allow / 8 Needs review / 1 Reject**.
+- `git diff --check`: passed.
 
 ## User outcome
 
