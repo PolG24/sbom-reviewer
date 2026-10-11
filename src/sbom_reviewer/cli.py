@@ -38,6 +38,11 @@ def build_parser() -> argparse.ArgumentParser:
     export = commands.add_parser("export", help="Export a standalone HTML report from an existing saved review.")
     export.add_argument("database", type=Path, help="Path to an existing saved review.")
     export.add_argument("--output", type=Path, required=True, help="New UTF-8 HTML output path (must not exist).")
+    ui = commands.add_parser("ui", help="Open the local browser review workflow (loopback only).")
+    ui.add_argument("--sbom-dir", type=Path, required=True, help="Directory containing CycloneDX JSON SBOMs.")
+    ui.add_argument("--policy", type=Path, required=True, help="Local JSON license policy.")
+    ui.add_argument("--review-dir", type=Path, default=Path("presentation/output/ui"), help="Directory for saved SQLite reviews.")
+    ui.add_argument("--port", type=int, default=8765, help="Local port (default: 8765).")
     return parser
 
 
@@ -60,6 +65,13 @@ def main() -> None:
     """Emit command JSON only after success, or an actionable error (exit 2)."""
     parser = build_parser()
     args = parser.parse_args()
+    if args.command == "ui":
+        from sbom_reviewer.ui import UIError, run_ui
+        try:
+            run_ui(args.sbom_dir, args.policy, args.review_dir, port=args.port)
+        except UIError as exc:
+            parser.error(str(exc))
+        return
     try:
         if args.command == "review":
             result = _review(args, parser)

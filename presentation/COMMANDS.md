@@ -20,6 +20,28 @@ mkdir -p presentation/output
 Use a fresh output directory or new filenames when repeating the walkthrough.
 Saving reviews and exporting reports refuse to overwrite existing files.
 
+## Browser alternative
+
+For the same review and decision flow with buttons instead of individual commands:
+
+```bash
+uv run --locked sbom-reviewer ui --sbom-dir presentation --policy policy/licenses.json --review-dir presentation/output/ui
+```
+
+Open the printed local URL. Select `cyclonedx.json`, optionally enable model-card
+fetching, and run machine review. Enter `Panel Reviewer` at the top. Inspect the
+library and model evidence, then confirm or override each recommendation with an
+explicit rationale. The page shows the original machine result alongside the
+human decision and retains each event in the history. Download the HTML report
+for the current state, or select a saved review to resume later.
+
+Keep the model-card fetch checkbox off for an offline rehearsal. With the
+presentation inventory, expect **2 total / 1 Allow / 1 Needs review / 0 Reject**
+and initially **0 recorded / 2 pending**. Confirming the model records Needs review;
+it does not approve the model for use. Live fetching may produce different evidence
+or counts, as described in step 2 below. Each new machine review is a new snapshot.
+Stop the server with Ctrl-C. The CLI walkthrough below remains available.
+
 ## 1. Start with declarations only
 
 ```bash

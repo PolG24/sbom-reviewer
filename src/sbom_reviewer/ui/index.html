@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SBOM reviewer · Local review</title>
+  <link rel="stylesheet" href="/style.css">
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true">S</span>
+      <div>
+        <strong>SBOM reviewer</strong>
+        <span class="eyebrow">LOCAL REVIEW WORKSPACE</span>
+      </div>
+    </div>
+    <label class="reviewer-label" for="reviewer">
+      Reviewer name or ID
+      <input id="reviewer" type="text" placeholder="e.g. Alex · Legal" autocomplete="name" maxlength="200">
+    </label>
+  </header>
+  <main>
+    <div class="intro">
+      <span class="eyebrow">EVIDENCE TO DECISION</span>
+      <h1>Review with context.</h1>
+      <p>Run a policy assessment, inspect the evidence, and record your decision with a rationale.</p>
+    </div>
+    <section class="setup" aria-label="Review selection">
+      <form id="run-form" class="run-form">
+        <label for="sbom">
+          SBOM file
+          <select id="sbom" required><option value="">Loading files…</option></select>
+        </label>
+        <label class="checkbox">
+          <input id="fetch" type="checkbox"> Fetch public model cards
+          <span class="hint">Optional network access</span>
+        </label>
+        <button id="run" class="primary" type="submit">Run machine review</button>
+      </form>
+      <div class="saved-picker">
+        <label for="saved">
+          Or reopen a saved review
+          <select id="saved"><option value="">Choose saved review…</option></select>
+        </label>
+        <button id="refresh" class="quiet" type="button">Refresh files</button>
+      </div>
+    </section>
+    <p id="status" class="status" role="status" aria-live="polite">Connecting to local workspace…</p>
+    <section id="workspace" hidden aria-label="Review results">
+      <div class="review-heading">
+        <div>
+          <span class="eyebrow">SAVED REVIEW</span>
+          <h2 id="review-title"></h2>
+          <p id="review-meta" class="muted"></p>
+        </div>
+        <a id="download" class="button quiet" href="#">Download HTML report</a>
+      </div>
+      <div id="summaries" class="summaries"></div>
+      <div class="components-heading">
+        <h2>Components</h2>
+        <label for="filter">
+          Show
+          <select id="filter">
+            <option value="all">All components</option>
+            <option value="pending">Pending human review</option>
+            <option value="Needs review">Machine: Needs review</option>
+            <option value="Reject">Machine: Reject</option>
+            <option value="Allow">Machine: Allow</option>
+          </select>
+        </label>
+      </div>
+      <div id="components"></div>
+      <details class="history">
+        <summary id="history-title">Complete decision history</summary>
+        <div id="history"></div>
+      </details>
+    </section>
+    <div id="empty" class="empty">
+      <span aria-hidden="true">○</span>
+      <h2>A clear trail for every decision.</h2>
+      <p>Select an SBOM to begin. Machine evidence and human decisions are saved separately in each review.</p>
+    </div>
+    <footer>Machine recommendations are preliminary policy assessments. Missing or uncertain evidence remains Needs review. Reviewer identity is supplied locally.</footer>
+  </main>
+  <dialog id="decision-dialog" aria-labelledby="dialog-title" aria-describedby="dialog-description">
+    <form id="decision-form">
+      <span class="eyebrow">HUMAN REVIEW</span>
+      <h2 id="dialog-title"></h2>
+      <p id="dialog-description"></p>
+      <label id="outcome-label" for="outcome">
+        Override outcome
+        <select id="outcome"></select>
+      </label>
+      <label for="reason">
+        Rationale <span class="muted">Required</span>
+        <textarea id="reason" rows="5" required placeholder="Explain the evidence or reasoning behind this decision." maxlength="16000"></textarea>
+      </label>
+      <p id="dialog-error" class="dialog-error" role="alert"></p>
+      <div class="dialog-actions">
+        <button id="cancel" type="button" class="quiet">Cancel</button>
+        <button id="save-decision" type="submit" class="primary">Save decision</button>
+      </div>
+    </form>
+  </dialog>
+</body>
+</html>
