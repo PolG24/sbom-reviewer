@@ -3,7 +3,7 @@
 from enum import StrEnum
 from typing import Annotated, Literal, Self
 
-from pydantic import BaseModel, ConfigDict, Field, StringConstraints, model_validator
+from pydantic import AwareDatetime, BaseModel, ConfigDict, Field, StringConstraints, model_validator
 
 
 class Decision(StrEnum):
@@ -127,3 +127,33 @@ class ReviewResult(BaseModel):
     policy_version: str
     results: list[ComponentResult]
     summary: Summary
+
+
+class PreparedDecision(BaseModel):
+    component_id: str
+    action: Literal["confirm", "override"]
+    decision: Decision
+    reviewer: NonemptyString
+    reason: NonemptyString
+
+
+class DecisionEvent(PreparedDecision):
+    event_id: int = Field(ge=1)
+    recorded_at: AwareDatetime
+
+
+class ReviewerSummary(BaseModel):
+    total: int
+    recorded: int
+    pending: int
+    allow: int
+    needs_review: int
+    reject: int
+
+
+class SavedReview(BaseModel):
+    snapshot: ReviewResult
+    saved_at: AwareDatetime
+    reviewer_decisions: list[DecisionEvent]
+    audit_log: list[DecisionEvent]
+    reviewer_summary: ReviewerSummary
