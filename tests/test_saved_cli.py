@@ -3,6 +3,7 @@
 import json
 from pathlib import Path
 import sys
+import sqlite3
 
 import pytest
 
@@ -138,3 +139,40 @@ def test_save_with_opt_in_fetch_preserves_inspected_card(tmp_path: Path, monkeyp
     assert saved.snapshot.results[0].model_assessment.status == "inspected"
     assert saved.snapshot.results[0].model_assessment.license_evidence.excerpt == "license: mit\n"
     assert saved.snapshot.results[0].decision == "Needs review"
+
+
+def test_default_review_never_opens_a_database(tmp_path: Path, monkeypatch, capsys) -> None:
+    from sbom_reviewer import cli
+    sbom, policy = write_inputs(tmp_path)
+    def forbidden_connection(*args, **kwargs):
+        pytest.fail("Default review opened a database")
+    monkeypatch.setattr(sqlite3, "connect", forbidden_connection)
+    monkeypatch.setattr(sys, "argv", ["sbom-reviewer", "review", str(sbom), "--policy", str(policy)])
+    cli.main()
+    captured = capsys.readouterr()
+    assert captured.err == ""
+    assert json.loads(captured.out)["summary"]["total"] == 0
+
+
+def test_failed_commit_does_not_emit_event_json_or_leave_history(tmp_path: Path, machine_review: ReviewResult) -> None:
+    from contextlib import closing
+    path = tmp_path / "review.sqlite"
+    save_review(path, machine_review)
+    before = load_review(path)
+    # A live reader permits INSERT but blocks the writer's commit in rollback-journal mode.
+    with closing(sqlite3.connect(path)) as reader:
+        reader.execute("BEGIN")
+        reader.execute("SELECT * FROM snapshot").fetchall()
+        result = run_cli("decide", str(path), "--component", "#/components/0", "--confirm",
+                         "--reviewer", "Legal", "--reason", "Checked")
+        assert result.returncode == 2 and result.stdout == ""
+        assert "locked" in result.stderr and "Traceback" not in result.stderr
+        reader.rollback()
+    assert load_review(path) == before
+
+
+@pytest.mark.parametrize("flags", [[], ["--reviewer", "Legal"], ["--reason", "Checked"]])
+def test_decide_requires_reviewer_and_reason(flags: list[str]) -> None:
+    result = run_cli("decide", "review.sqlite", "--component", "#/components/0", "--confirm", *flags)
+    assert result.returncode == 2 and result.stdout == ""
+    assert "required" in result.stderr and "Traceback" not in result.stderr

@@ -1,6 +1,43 @@
 # STORY-003: Record reviewer decisions, retain an audit log, and export a report
 
-Status: Planned; architecture agreed
+Status: Implemented; awaiting Jenkins validation
+
+## Local validation handoff
+
+Implemented on `story-003`, created from `main` at `db96190`. The implementation
+adds typed reviewer actions, one immutable machine snapshot per SQLite database,
+transactional append-only events, save/decide/show commands, and standalone HTML
+export. No dependencies were added, and STORY-001/002 classification and parsing
+behavior remain unchanged. Changes are committed in stages for decisions/storage,
+CLI workflows, a storage cleanup fix, and report/documentation integration.
+
+Local acceptance on 2026-10-11:
+
+- `uv sync --locked`: passed.
+- `uv run --locked pytest`: **419 passed**. Real SQLite and installed-CLI tests
+  cover machine-evidence preservation, confirmation/override semantics, independent
+  component/review histories, same-timestamp ordering, transaction commit failures,
+  invalid input/database paths, HTML escaping, and deterministic offline exports.
+- `sh scripts/audit-dependencies.sh`: passed; **No known vulnerabilities found**.
+- `git diff --check`: passed.
+- Offline sample `review --save-review`, `decide --confirm`, `decide --override Allow`,
+  `show`, and two `export` commands: all exited 0 with their specified stdout/stderr.
+  Initial machine counts stayed **14 total / 4 Allow / 9 Needs review / 1 Reject**;
+  initial human counts were **0 recorded / 14 pending**. The two illustrative
+  decisions produced **2 recorded / 12 pending / 2 Allow / 0 Needs review / 0 Reject**.
+  The original snapshot stayed unchanged and audit event IDs 1 and 2 were retained.
+  HTML contained all 14 components and 12 pending states; repeated exports were
+  byte-identical and left the database bytes unchanged.
+
+The workflow uses caller-supplied reviewer names, without authentication. History
+is append-only at the application level, not cryptographically protected against
+direct database edits. Browser collaboration, signing, and direct PDF generation
+remain outside scope. No live evidence fetch is needed for this story's acceptance.
+
+Jenkins validation remains pending. Validate the final committed `story-003`
+revision, with Tests and Dependency audit passing, and record the tested revision,
+build number, and result before marking this story Complete. No Jenkins build has
+been run or claimed here. The branch has not been pushed.
 
 ## User outcome
 

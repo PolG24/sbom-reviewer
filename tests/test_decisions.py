@@ -5,13 +5,13 @@ from datetime import datetime, timezone
 import pytest
 
 from sbom_reviewer import decisions as api
-from sbom_reviewer.models import ReviewResult
+from sbom_reviewer.models import DecisionEvent, ReviewResult
 
 
-
-def event(api, review, component, event_id, **action):
-    from sbom_reviewer.models import DecisionEvent
-    prepared = api.prepare_decision(review, component, reviewer="Legal", reason="Reviewed evidence", **action)
+def event(review: ReviewResult, component: str, event_id: int, *,
+          confirm: bool = False, override: str | None = None) -> DecisionEvent:
+    prepared = api.prepare_decision(review, component, reviewer="Legal", reason="Reviewed evidence",
+                                    confirm=confirm, override=override)
     return DecisionEvent(event_id=event_id, recorded_at=datetime(2026, 1, 1, tzinfo=timezone.utc),
                          **prepared.model_dump())
 
@@ -29,9 +29,9 @@ def test_confirm_uses_original_recommendation(machine_review: ReviewResult, inde
 
 
 def test_latest_event_ids_determine_ordered_current_decisions_and_counts(machine_review: ReviewResult) -> None:
-    events = [event(api, machine_review, "#/components/2", 1, override="Allow"),
-              event(api, machine_review, "#/components/1", 2, override="Allow"),
-              event(api, machine_review, "#/components/2", 3, confirm=True)]
+    events = [event(machine_review, "#/components/2", 1, override="Allow"),
+              event(machine_review, "#/components/1", 2, override="Allow"),
+              event(machine_review, "#/components/2", 3, confirm=True)]
     current, summary = api.current_decisions(machine_review, events)
     assert [item.event_id for item in current] == [2, 3]
     assert [item.decision for item in current] == ["Allow", "Reject"]
@@ -47,7 +47,7 @@ def test_pending_and_recorded_needs_review_remain_unresolved(machine_review: Rev
     assert summary.model_dump() == {"total": 3, "recorded": 0, "pending": 3,
                                     "allow": 0, "needs_review": 0, "reject": 0}
     current, summary = api.current_decisions(machine_review, [
-        event(api, machine_review, "#/components/1", 1, confirm=True)])
+        event(machine_review, "#/components/1", 1, confirm=True)])
     assert summary.needs_review == 1
     assert summary.allow == 0
     assert summary.pending == 2

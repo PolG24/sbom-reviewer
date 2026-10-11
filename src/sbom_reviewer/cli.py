@@ -6,6 +6,7 @@ from pathlib import Path
 from sbom_reviewer.decisions import DecisionError
 from sbom_reviewer.models import Decision, ReviewResult
 from sbom_reviewer.policy import load_policy
+from sbom_reviewer.report import render_report
 from sbom_reviewer.review import review_components
 from sbom_reviewer.sbom import load_sbom
 from sbom_reviewer.storage import StorageError, load_review, record_decision, save_review
@@ -34,6 +35,9 @@ def build_parser() -> argparse.ArgumentParser:
     decide.add_argument("--reason", required=True, help="Nonblank rationale for this action.")
     show = commands.add_parser("show", help="Inspect a saved review, current human decisions, and audit history.")
     show.add_argument("database", type=Path, help="Path to an existing saved review.")
+    export = commands.add_parser("export", help="Export a standalone HTML report from an existing saved review.")
+    export.add_argument("database", type=Path, help="Path to an existing saved review.")
+    export.add_argument("--output", type=Path, required=True, help="New UTF-8 HTML output path (must not exist).")
     return parser
 
 
@@ -62,11 +66,23 @@ def main() -> None:
         elif args.command == "decide":
             result = record_decision(args.database, args.component, confirm=args.confirm,
                                      override=args.override, reviewer=args.reviewer, reason=args.reason)
-        else:
+        elif args.command == "show":
             result = load_review(args.database)
+        else:
+            document = render_report(load_review(args.database))
+            _write_report(args.output, document)
+            return
     except (StorageError, DecisionError) as exc:
         parser.error(str(exc))
     print(result.model_dump_json(indent=2))
+
+
+def _write_report(path: Path, document: str) -> None:
+    try:
+        with path.open("x", encoding="utf-8") as stream:
+            stream.write(document)
+    except OSError as exc:
+        raise StorageError(f"Cannot write report '{path}': {exc}") from exc
 
 
 if __name__ == "__main__":
