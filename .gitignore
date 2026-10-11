@@ -18,3 +18,4 @@ audit-output.txt
 test-status.txt
 audit-status.txt
 .vscode/
+/presentation/output/
