@@ -31,7 +31,8 @@ INDICATORS = re.compile(
     r"prohibited uses|restricted to)\b", re.IGNORECASE,
 )
 HEADING = re.compile(r"^ {0,3}(#{1,6})(?:[ \t]+(.*)|[ \t]*)$")
-LINK = re.compile(r'(?<!!)\[([^\]\n]+)\]\(\s*(<[^>\n]+>|[^\s)]+)(?:\s+["\'][^\n]*?["\'])?\s*\)')
+LINK = re.compile(r"(?<!!)\[[^\]\n]+\]\(\s*")
+LINK_END = re.compile(r'(?:\s+["\'][^\n]*?["\'])?\s*\)')
 
 
 class UniqueSafeLoader(yaml.SafeLoader):
@@ -167,6 +168,36 @@ def _reference_url(card: FetchedCard, target: str) -> str | None:
     return resolved if parsed.scheme in {"http", "https"} and parsed.netloc else None
 
 
+def _link_targets(text: str) -> Iterator[str]:
+    """Read inline destinations without truncating balanced or escaped parentheses."""
+    for match in LINK.finditer(text):
+        start = end = match.end()
+        if text[start:start + 1] == "<":
+            end = text.find(">", start + 1)
+            if end == -1:
+                continue
+            target, stop = text[start + 1:end], end + 1
+        else:
+            depth = 0
+            while end < len(text):
+                char = text[end]
+                if char == "\\" and end + 1 < len(text):
+                    end += 2
+                    continue
+                if char.isspace() or (char == ")" and depth == 0):
+                    break
+                if char == "(":
+                    depth += 1
+                elif char == ")":
+                    depth -= 1
+                end += 1
+            if depth:
+                continue
+            target, stop = text[start:end], end
+        if target and "\n" not in target and LINK_END.match(text, stop):
+            yield re.sub(r"\\([()\\])", r"\1", target)
+
+
 def _terms(card: FetchedCard, lines: list[str], values: dict[str, str], evidence: dict[str, EvidenceExcerpt],
            sections: list[tuple[int, int]], paragraphs: list[tuple[int, int]]) -> Iterator[tuple[str, EvidenceExcerpt]]:
     if values.get("license_link", "").strip():
@@ -177,8 +208,8 @@ def _terms(card: FetchedCard, lines: list[str], values: dict[str, str], evidence
         if not any(left <= start < right for left, right in sections):
             continue
         excerpt = _evidence(card, lines, start, end)
-        for match in LINK.finditer(excerpt.excerpt):
-            url = _reference_url(card, match[2].strip("<>"))
+        for target in _link_targets(excerpt.excerpt):
+            url = _reference_url(card, target)
             if url:
                 yield url, excerpt
 

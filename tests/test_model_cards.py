@@ -150,6 +150,25 @@ def test_terms_resolve_to_blob_location_and_are_explicitly_unread() -> None:
     assert all("image.png" not in f.message and "#license" not in f.message for f in terms)
 
 
+@pytest.mark.parametrize("destination, expected", [
+    ("https://example.org/terms_(v1)", "https://example.org/terms_(v1)"),
+    ("https://example.org/terms_(v1_(draft))", "https://example.org/terms_(v1_(draft))"),
+    (r"https://example.org/terms_\(v1\)", "https://example.org/terms_(v1)"),
+])
+def test_parenthesized_license_links_preserve_the_complete_url(destination: str, expected: str) -> None:
+    from sbom_reviewer.model_card_fetch import FetchedCard
+    from sbom_reviewer.model_cards import referenced_terms
+
+    text = f"---\nlicense: MIT\n---\n## License\nRead [terms]({destination}).\n"
+    result = inspect(text)
+    terms = [f for f in result.findings if f.code == "referenced_terms_unread"]
+    assert len(terms) == 1
+    assert terms[0].message == f"Referenced terms at {expected} were not fetched or assessed."
+    assert terms[0].evidence.excerpt == f"Read [terms]({destination}).\n"
+    card = FetchedCard(URL, text, hashlib.sha256(text.encode()).hexdigest())
+    assert [url for url, _ in referenced_terms(card)] == [expected]
+
+
 def test_duplicate_fixture_metadata_is_invalid_without_silently_selecting_license() -> None:
     result = inspect((FIXTURES / "invalid.md").read_text())
     assert result.normalized_license is None
