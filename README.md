@@ -65,6 +65,12 @@ The offline report is an illustrative baseline: **4 Allow / 9 Needs review /
 - Reviewer identity is unauthenticated; audit history is append-only through the
   application but not protected against direct database edits.
 - The CLI uses `argparse`; Click decorators could simplify command definitions.
+- The local UI backend lives in `ui/__init__.py`; moving it to a dedicated server
+  module is deferred while UI work remains a low priority.
+- Model-card metadata and prose are parsed twice when collecting assessment
+  findings and referenced terms, adding some redundant processing.
+- Browser display and standalone HTML export have overlapping presentation
+  logic; changes to displayed fields need coordination across both renderers.
 
 See [detailed behavior and limitations](docs/review-behavior.md). Recommendations
 and reports do not establish legal approval or CRA compliance.

@@ -12,7 +12,7 @@ from typing import Any, TypedDict
 import pytest
 
 from sbom_reviewer.models import Component, Policy
-from sbom_reviewer.policy import classify_component, load_policy, review_components
+from sbom_reviewer.policy import classify_component, classify_components, load_policy
 from sbom_reviewer.sbom import load_sbom
 
 
@@ -81,7 +81,7 @@ def test_matrix_summary_counts_final_model_decisions(
 ) -> None:
     # Catches counting the underlying license finding before model deferral.
     components, policy = matrix_inputs
-    result = review_components(components, policy)
+    result = classify_components(components, policy)
     assert [finding.decision for finding in result.results] == [case["decision"] for case in CASES]
     assert result.summary.total == len(CASES)
     for field, decision in (("allow", "Allow"), ("needs_review", "Needs review"), ("reject", "Reject")):

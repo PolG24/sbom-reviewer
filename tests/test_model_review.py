@@ -8,7 +8,7 @@ import pytest
 from sbom_reviewer.model_cards.fetch import CardFetchError, FetchedCard
 from sbom_reviewer.model_cards.parser import inspect_model_card
 from sbom_reviewer.models import Component, Decision, FindingCode, LicenseDeclaration, Policy, SourceReference
-from sbom_reviewer.policy import classify_component, review_components
+from sbom_reviewer.policy import classify_component, classify_components
 
 URL = "https://huggingface.co/test/model"
 RAW = URL + "/raw/main/README.md"
@@ -86,7 +86,7 @@ def test_single_spdx_expression_is_comparable() -> None:
 def test_pure_policy_mapping_uses_component_identity_and_final_counts() -> None:
     components = [model(index=0), model(index=1), model(index=2, component_type="library")]
     assessments = {"#/components/1": inspect_model_card(card("license: agpl-3.0-only"))}
-    result = review_components(components, POLICY, assessments)
+    result = classify_components(components, POLICY, assessments)
     assert [r.decision for r in result.results] == ["Needs review", "Reject", "Allow"]
     assert result.summary.model_dump() == {"total": 3, "allow": 1, "needs_review": 1, "reject": 1}
     assert result.results[0].model_assessment is None
@@ -98,7 +98,7 @@ def test_disabled_fetching_never_calls_fetcher_and_matches_pure_policy() -> None
         pytest.fail("Default path must never fetch a card")
     components = [model(), model(component_type="library")]
     result = orchestrator()(components, POLICY, card_fetch=fail)
-    assert result.model_dump() == review_components(components, POLICY).model_dump()
+    assert result.model_dump() == classify_components(components, POLICY).model_dump()
     assert all(r.model_assessment is None for r in result.results)
 
 

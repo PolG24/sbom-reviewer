@@ -29,7 +29,7 @@ def test_non_json_constants_are_rejected_at_the_parse_boundary(tmp_path: Path, t
 
 
 def test_numeric_constant_names_inside_strings_remain_declarations(tmp_path: Path) -> None:
-    from sbom_reviewer.policy import load_policy, review_components
+    from sbom_reviewer.policy import classify_components, load_policy
     from sbom_reviewer.sbom import load_sbom
 
     sbom = tmp_path / "quoted.json"
@@ -41,7 +41,7 @@ def test_numeric_constant_names_inside_strings_remain_declarations(tmp_path: Pat
     }), encoding="utf-8")
     policy = tmp_path / "policy.json"
     policy.write_text(json.dumps({"version": "NaN", "allowed": ["Infinity"], "review": [], "rejected": []}), encoding="utf-8")
-    result = review_components(load_sbom(sbom), load_policy(policy))
+    result = classify_components(load_sbom(sbom), load_policy(policy))
     assert result.policy_version == "NaN"
     assert result.results[0].name == "NaN Infinity -Infinity"
     assert result.results[0].declared_licenses == ["NaN Infinity -Infinity"]

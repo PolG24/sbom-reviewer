@@ -95,8 +95,8 @@ def classify_component(component: Component, policy: Policy,
     )
 
 
-def review_components(components: list[Component], policy: Policy,
-                      assessments: Mapping[str, ModelAssessment] | None = None) -> ReviewResult:
+def classify_components(components: list[Component], policy: Policy,
+                        assessments: Mapping[str, ModelAssessment] | None = None) -> ReviewResult:
     results = [classify_component(component, policy, (assessments or {}).get(component.component_id))
                for component in components]
     return ReviewResult(

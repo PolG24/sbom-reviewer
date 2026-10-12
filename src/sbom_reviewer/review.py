@@ -42,7 +42,7 @@ def _inspect_component(component: Component, card_fetch: Callable[[str], Fetched
 def review_components(components: list[Component], policy: Policy, *, fetch_model_cards: bool = False,
                       card_fetch: Callable[[str], FetchedCard] | None = None) -> ReviewResult:
     if not fetch_model_cards:
-        return license_policy.review_components(components, policy)
+        return license_policy.classify_components(components, policy)
     fetch = card_fetch if card_fetch is not None else fetch_model_card
     assessments: dict[str, ModelAssessment] = {}
     collected: list[Component] = []
@@ -51,4 +51,4 @@ def review_components(components: list[Component], policy: Policy, *, fetch_mode
             component, assessment = _inspect_component(component, fetch)
             assessments[component.component_id] = assessment
         collected.append(component)
-    return license_policy.review_components(collected, policy, assessments)
+    return license_policy.classify_components(collected, policy, assessments)

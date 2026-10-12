@@ -124,7 +124,7 @@ def test_empty_categories_and_case_sensitive_identifiers_are_valid(tmp_path: Pat
 
 def test_summary_counts_actual_decisions_and_preserves_sources() -> None:
     from sbom_reviewer.models import Component, LicenseDeclaration, Policy, SourceReference
-    from sbom_reviewer.policy import review_components
+    from sbom_reviewer.policy import classify_components
 
     source = SourceReference(url="https://example.org/license", kind="license", pointer="#/components/0/licenses/0/license/url")
     components = [
@@ -133,11 +133,11 @@ def test_summary_counts_actual_decisions_and_preserves_sources() -> None:
                   sources=[source])
         for index, value in enumerate(["MIT", None, "AGPL-3.0-only"])
     ]
-    result = review_components(components, Policy.model_validate(POLICY))
+    result = classify_components(components, Policy.model_validate(POLICY))
     assert result.policy_version == "1.0"
     assert result.summary.model_dump() == {"total": 3, "allow": 1, "needs_review": 1, "reject": 1}
     assert [r.bom_ref for r in result.results] == ["ref-0", "ref-1", "ref-2"]
     assert result.results[0].sources == [source]
-    assert review_components([], Policy.model_validate(POLICY)).summary.model_dump() == {
+    assert classify_components([], Policy.model_validate(POLICY)).summary.model_dump() == {
         "total": 0, "allow": 0, "needs_review": 0, "reject": 0,
     }
